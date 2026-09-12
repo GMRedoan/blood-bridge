@@ -1,3 +1,4 @@
+import Footer from "@/components/Shared/Footer";
 import { Navbar } from "@/components/Shared/Navbar";
 import { Metadata } from "next";
 
@@ -20,7 +21,7 @@ export default function HomeLayout({
       <main className="max-w-7xl mx-auto px-5">
         {children}
       </main>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 }

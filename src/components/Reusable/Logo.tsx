@@ -6,7 +6,7 @@ const Logo = () => {
       <Image
         src="https://i.ibb.co.com/KczDkL5Q/favicon.png"
         alt="Logo"
-        width={60}
+        width={50}
         height={20}
       />
     </div>
