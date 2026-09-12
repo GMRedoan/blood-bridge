@@ -1,25 +1,49 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, Inter, Geist } from 'next/font/google';
+import { Plus_Jakarta_Sans, Inter, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import Provider from "@/providers/Provider";
+import { AuthProvider } from "@/providers/AuthProvider";
+import { getUser } from "@/server/user/user.service";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
-const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-heading' });
-const inter = Inter({ subsets: ['latin'], variable: '--font-body' });
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-heading",
+});
+const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
 
 export const metadata: Metadata = {
-  title: "Blood Bridge",
-  description: "A bridge for blood donation",
+  title: {
+    default: "Blood Bridge",
+    template: "%s | Blood Bridge",
+  },
+  description: "An app for blood donation",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const user = await getUser();
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", jakarta.variable, inter.variable, "font-sans", geist.variable)}
+      suppressHydrationWarning
+      className={cn(
+        "h-full",
+        "antialiased",
+        jakarta.variable,
+        inter.variable,
+        "font-sans",
+        geist.variable,
+      )}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <Provider>
+          <AuthProvider initialUser={user.success ? user.data : null}>
+            {children}
+          </AuthProvider>
+        </Provider>
+      </body>
     </html>
   );
 }
