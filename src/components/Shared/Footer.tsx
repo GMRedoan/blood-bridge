@@ -153,7 +153,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-4 border-t pt-6 text-sm text-muted-foreground text-center">
-          <p>© {new Date().getFullYear()} RentNest. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Blood Bridge. All rights reserved.</p>
         </div>
       </Animate>
     </footer>

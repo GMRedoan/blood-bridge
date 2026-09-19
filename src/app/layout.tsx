@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import Provider from "@/providers/Provider";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { getUser } from "@/server/user/user.service";
+import AuthDialog from "@/components/Shared/auth/AuthDialog";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -41,6 +42,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <Provider>
           <AuthProvider initialUser={user.success ? user.data : null}>
             {children}
+            <AuthDialog/>
           </AuthProvider>
         </Provider>
       </body>

@@ -2,6 +2,7 @@
 "use client";
 
 import {
+  ArrowUpRight,
   BadgeCheck,
   ChevronRight,
   LogOut,
@@ -157,38 +158,52 @@ const Navbar = ({ menu = defaultMenu }: NavbarProps) => {
 // ====================== Desktop Menu ======================
 const DesktopMenu = ({ menu, user, isLoggedIn, handleLogOut }: any) => {
   return (
-    <nav className="hidden h-20 items-center justify-between lg:flex">
-      {/* Logo */}
-      <div className="flex items-center gap-2">
-        <Logo />
-        <Link href={"/"} className="flex flex-col">
-          <span className="text-2xl font-bold tracking-tight text-foreground hover:text-primary transition-all duration-300">
-            Blood Bridge
-          </span>
-          <span className="-mt-1 text-xs text-muted-foreground">
-             Blood Donation Platform
-          </span>
+    <nav className="hidden h-20 items-center lg:flex">
+      <div className="flex w-full items-center justify-between">
+        {/* ───────────────── Logo ───────────────── */}
+        <Link href="/" className="group flex items-center gap-3">
+          <div className="relative flex h-10 w-10 items-center justify-center">
+            <div className="absolute inset-0 rounded-xl bg-primary/10 transition-all duration-500 group-hover:scale-110 group-hover:bg-primary/15" />
+
+            <div className="relative">
+              <Logo />
+            </div>
+          </div>
+
+          <div className="flex flex-col">
+            <span className="text-xl font-bold leading-none tracking-tight text-foreground transition-colors duration-300 group-hover:text-primary">
+              Blood Bridge
+            </span>
+
+            <span className="mt-1 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              Blood Donation Platform
+            </span>
+          </div>
         </Link>
-      </div>
 
-      {/* Navigation */}
-      <div className="rounded-full border border-border/60 bg-card/70 px-6 py-2 shadow-sm backdrop-blur-xl">
-        <NavigationMenu>
-          <NavigationMenuList className="gap-5">
-            {menu.map((item: MenuItem) => (
-              <DesktopMenuItem key={item.title} item={item} />
-            ))}
-          </NavigationMenuList>
-        </NavigationMenu>
-      </div>
+        {/* ───────────────── Right Side ───────────────── */}
+        <div className="flex items-center gap-7">
+          {/* Navigation */}
+          <NavigationMenu>
+            <NavigationMenuList className="gap-1">
+              {menu.map((item: MenuItem) => (
+                <DesktopMenuItem key={item.title} item={item} />
+              ))}
+            </NavigationMenuList>
+          </NavigationMenu>
 
-      {/* Right Side */}
-      <div className="flex items-center gap-3">
-        <AuthButtons
-          isLoggedIn={isLoggedIn}
-          user={user}
-          handleLogOut={handleLogOut}
-        />
+          {/* Divider */}
+          <div className="h-6 w-px bg-border/70" />
+
+          {/* Theme + Auth */}
+          <div className="flex items-center gap-3">
+            <AuthButtons
+              isLoggedIn={isLoggedIn}
+              user={user}
+              handleLogOut={handleLogOut}
+            />
+          </div>
+        </div>
       </div>
     </nav>
   );
@@ -196,6 +211,7 @@ const DesktopMenu = ({ menu, user, isLoggedIn, handleLogOut }: any) => {
 
 // ====================== Auth ======================
 const AuthButtons = ({ isLoggedIn, user, handleLogOut }: any) => {
+   const { openLogin } = useAuth();
   return (
     <div className="flex flex-col lg:flex-row lg:items-center gap-4">
       {user ? (
@@ -214,13 +230,41 @@ const AuthButtons = ({ isLoggedIn, user, handleLogOut }: any) => {
       <div className="flex items-center gap-4 mt-8 md:mt-0">
         <ThemeToggle />
         {!isLoggedIn ? (
-          <div>
-            <Link href={"/login"}>
-              <Button className="px-4 py-5 font-medium cursor-pointer text-white">
-                LOGIN / REGISTER
-              </Button>
-            </Link>
-          </div>
+          <button
+            onClick={openLogin}
+            className="
+    group flex h-10 items-center gap-2
+    rounded-xl
+    bg-primary/10
+    px-4
+    text-sm font-semibold
+    text-primary
+    transition-all duration-300
+    hover:bg-primary
+    hover:text-primary-foreground
+  "
+          >
+            <span>Login / Register</span>
+
+            <span
+              className="
+      flex h-5 w-5 items-center justify-center
+      rounded-md
+      bg-primary/15
+      transition-all duration-300
+      group-hover:bg-white/15
+    "
+            >
+              <ArrowUpRight
+                className="
+        h-3.5 w-3.5
+        transition-transform duration-300
+        group-hover:translate-x-0.5
+        group-hover:-translate-y-0.5
+      "
+              />
+            </span>
+          </button>
         ) : (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -322,7 +366,18 @@ const DesktopMenuItem = ({ item }: { item: MenuItem }) => {
   if (item.items) {
     return (
       <NavigationMenuItem>
-        <NavigationMenuTrigger>{item.title}</NavigationMenuTrigger>
+        <NavigationMenuTrigger
+          className={clsx(
+            "relative h-10 rounded-xl px-4 text-sm font-medium",
+            "bg-transparent transition-all duration-300",
+            "text-muted-foreground",
+            "hover:bg-muted/70 hover:text-foreground",
+            "data-[state=open]:bg-muted/70 data-[state=open]:text-foreground",
+          )}
+        >
+          {item.title}
+        </NavigationMenuTrigger>
+
         <NavigationMenuContent>
           {item.items.map((subItem) => (
             <NavigationMenuLink asChild key={subItem.title}>
@@ -340,22 +395,44 @@ const DesktopMenuItem = ({ item }: { item: MenuItem }) => {
         <Link
           href={item.url}
           className={clsx(
-            "group relative flex items-center text-sm font-medium uppercase tracking-wide transition-all duration-300 ease-out",
-            "text-background/80 hover:text-primary",
-            "hover:-translate-y-0.5 hover:text-primary",
-            isActive ? "text-primary font-semibold" : "text-foreground",
+            "group relative flex h-10 items-center rounded-xl px-4",
+            "text-sm font-medium",
+            "transition-all duration-300 ease-out",
+
+            // Normal
+            !isActive && "text-muted-foreground",
+
+            // Hover
+            !isActive && "hover:bg-muted/70 hover:text-foreground",
+
+            // Active
+            isActive && "bg-primary/10 text-primary shadow-sm shadow-primary/5",
           )}
         >
-          {item.title}
+          {/* Hover glow */}
+          <span
+            className={clsx(
+              "absolute inset-0 -z-10 rounded-xl",
+              "bg-primary/5 opacity-0 blur-md",
+              "transition-all duration-300",
+              "group-hover:opacity-100",
+            )}
+          />
+
+          {/* Active indicator */}
+          {isActive && (
+            <span className="absolute left-1.5 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+          )}
 
           <span
             className={clsx(
-              "absolute left-1/2 bottom-0 h-0.5 -translate-x-1/2 rounded-full bg-primary transition-all duration-300",
-              isActive
-                ? "w-8 opacity-100"
-                : "w-0 opacity-0 hover:w-5 hover:opacity-70",
+              "transition-all duration-300",
+              isActive && "translate-x-1.5",
+              !isActive && "group-hover:translate-x-0.5",
             )}
-          />
+          >
+            {item.title}
+          </span>
         </Link>
       </NavigationMenuLink>
     </NavigationMenuItem>
