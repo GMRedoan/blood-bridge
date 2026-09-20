@@ -5,6 +5,7 @@ import {
   ArrowUpRight,
   BadgeCheck,
   ChevronRight,
+  LogIn,
   LogOut,
   Menu,
   Phone,
@@ -15,7 +16,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { motion } from "framer-motion";
-
 import {
   Accordion,
   AccordionContent,
@@ -36,7 +36,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Sheet,
@@ -160,8 +159,8 @@ const DesktopMenu = ({ menu, user, isLoggedIn, handleLogOut }: any) => {
   return (
     <nav className="hidden h-20 items-center lg:flex">
       <div className="flex w-full items-center justify-between">
-        {/* ───────────────── Logo ───────────────── */}
-        <Link href="/" className="group flex items-center gap-3">
+        {/* logo */}
+         <Link href="/" className="group flex items-center gap-3">
           <div className="relative flex h-10 w-10 items-center justify-center">
             <div className="absolute inset-0 rounded-xl bg-primary/10 transition-all duration-500 group-hover:scale-110 group-hover:bg-primary/15" />
 
@@ -181,9 +180,8 @@ const DesktopMenu = ({ menu, user, isLoggedIn, handleLogOut }: any) => {
           </div>
         </Link>
 
-        {/* ───────────────── Right Side ───────────────── */}
-        <div className="flex items-center gap-7">
-          {/* Navigation */}
+      {/* Right Side */}
+        <div className="flex items-center gap-6">
           <NavigationMenu>
             <NavigationMenuList className="gap-1">
               {menu.map((item: MenuItem) => (
@@ -192,10 +190,8 @@ const DesktopMenu = ({ menu, user, isLoggedIn, handleLogOut }: any) => {
             </NavigationMenuList>
           </NavigationMenu>
 
-          {/* Divider */}
-          <div className="h-6 w-px bg-border/70" />
+          <div className="h-6 w-px bg-primary/70" />
 
-          {/* Theme + Auth */}
           <div className="flex items-center gap-3">
             <AuthButtons
               isLoggedIn={isLoggedIn}
@@ -211,7 +207,7 @@ const DesktopMenu = ({ menu, user, isLoggedIn, handleLogOut }: any) => {
 
 // ====================== Auth ======================
 const AuthButtons = ({ isLoggedIn, user, handleLogOut }: any) => {
-   const { openLogin } = useAuth();
+  const { openLogin } = useAuth();
   return (
     <div className="flex flex-col lg:flex-row lg:items-center gap-4">
       {user ? (
@@ -232,37 +228,14 @@ const AuthButtons = ({ isLoggedIn, user, handleLogOut }: any) => {
         {!isLoggedIn ? (
           <button
             onClick={openLogin}
-            className="
-    group flex h-10 items-center gap-2
-    rounded-xl
-    bg-primary/10
-    px-4
-    text-sm font-semibold
-    text-primary
-    transition-all duration-300
-    hover:bg-primary
-    hover:text-primary-foreground
+            className="group flex h-10 items-center gap-2 rounded-xl bg-primary/10 px-4 text-sm font-semibold text-primary
+            transition-all duration-300 hover:bg-primary hover:text-primary-foreground cursor-pointer
   "
           >
             <span>Login / Register</span>
 
-            <span
-              className="
-      flex h-5 w-5 items-center justify-center
-      rounded-md
-      bg-primary/15
-      transition-all duration-300
-      group-hover:bg-white/15
-    "
-            >
-              <ArrowUpRight
-                className="
-        h-3.5 w-3.5
-        transition-transform duration-300
-        group-hover:translate-x-0.5
-        group-hover:-translate-y-0.5
-      "
-              />
+            <span>
+               <LogIn size={16}/>
             </span>
           </button>
         ) : (
@@ -363,31 +336,31 @@ const DesktopMenuItem = ({ item }: { item: MenuItem }) => {
   const pathname = usePathname();
   const isActive = pathname === item.url;
 
-  if (item.items) {
-    return (
-      <NavigationMenuItem>
-        <NavigationMenuTrigger
-          className={clsx(
-            "relative h-10 rounded-xl px-4 text-sm font-medium",
-            "bg-transparent transition-all duration-300",
-            "text-muted-foreground",
-            "hover:bg-muted/70 hover:text-foreground",
-            "data-[state=open]:bg-muted/70 data-[state=open]:text-foreground",
-          )}
-        >
-          {item.title}
-        </NavigationMenuTrigger>
+  // if (item.items) {
+  //   return (
+  //     <NavigationMenuItem>
+  //       {/* <NavigationMenuTrigger
+  //         className={clsx(
+  //           "relative h-10 rounded-xl px-4 text-sm font-medium",
+  //           "bg-transparent transition-all duration-300",
+  //           "text-muted-foreground",
+  //           "hover:bg-muted/70 hover:text-foreground",
+  //           "data-[state=open]:bg-muted/70 data-[state=open]:text-foreground",
+  //         )}
+  //       >
+  //         {item.title}
+  //       </NavigationMenuTrigger> */}
 
-        <NavigationMenuContent>
-          {item.items.map((subItem) => (
-            <NavigationMenuLink asChild key={subItem.title}>
-              <SubMenuLink item={subItem} />
-            </NavigationMenuLink>
-          ))}
-        </NavigationMenuContent>
-      </NavigationMenuItem>
-    );
-  }
+  //       <NavigationMenuContent>
+  //         {/* {item.items.map((subItem) => (
+  //           <NavigationMenuLink asChild key={subItem.title}>
+  //             <SubMenuLink item={subItem} />
+  //           </NavigationMenuLink>
+  //         ))} */}
+  //       </NavigationMenuContent>
+  //     </NavigationMenuItem>
+  //   );
+  // }
 
   return (
     <NavigationMenuItem>
@@ -395,33 +368,21 @@ const DesktopMenuItem = ({ item }: { item: MenuItem }) => {
         <Link
           href={item.url}
           className={clsx(
-            "group relative flex h-10 items-center rounded-xl px-4",
+            "group relative flex py-2 px-4 items-center rounded-xl",
             "text-sm font-medium",
             "transition-all duration-300 ease-out",
 
-            // Normal
             !isActive && "text-muted-foreground",
 
-            // Hover
             !isActive && "hover:bg-muted/70 hover:text-foreground",
 
             // Active
             isActive && "bg-primary/10 text-primary shadow-sm shadow-primary/5",
           )}
         >
-          {/* Hover glow */}
-          <span
-            className={clsx(
-              "absolute inset-0 -z-10 rounded-xl",
-              "bg-primary/5 opacity-0 blur-md",
-              "transition-all duration-300",
-              "group-hover:opacity-100",
-            )}
-          />
-
           {/* Active indicator */}
           {isActive && (
-            <span className="absolute left-1.5 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_8px_rgba(239,68,68,0.5)]" />
+            <span className="absolute left-2.5 top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_8px_rgba(239,68,68,0.5)]"/>
           )}
 
           <span

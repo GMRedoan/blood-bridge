@@ -6,7 +6,6 @@ import { LoginForm } from "./LoginForm";
 import { RegisterForm } from "./RegisterForm";
 import { VerifyEmailForm } from "./VerifyEmail";
 
-
 export default function AuthDialog() {
   const { authOpen, authStep, closeAuth } = useAuth();
 
@@ -21,9 +20,7 @@ export default function AuthDialog() {
     >
       <DialogContent className="sm:max-w-md">
         {authStep === "login" && <LoginForm />}
-
         {authStep === "register" && <RegisterForm />}
-
         {authStep === "verify-email" && <VerifyEmailForm />}
       </DialogContent>
     </Dialog>

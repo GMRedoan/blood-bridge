@@ -8,25 +8,20 @@ export type AuthStep =
   | "login"
   | "register"
   | "verify-email"
-  | "forgot-password"
-  | "reset-password"
   | "success";
 
 interface AuthContextType {
-  // User
   user: IUserProfile | null;
   setUser: (user: IUserProfile | null) => void;
   isLoggedIn: boolean;
   refreshUser: () => Promise<void>;
 
-  // Auth dialog
   authOpen: boolean;
   authStep: AuthStep;
 
   openLogin: () => void;
   openRegister: () => void;
   closeAuth: () => void;
-
   setAuthStep: (step: AuthStep) => void;
 }
 
@@ -40,10 +35,8 @@ export function AuthProvider({
   initialUser: IUserProfile | null;
 }) {
   const [user, setUser] = useState<IUserProfile | null>(initialUser);
-
   const [authOpen, setAuthOpen] = useState(false);
   const [authStep, setAuthStep] = useState<AuthStep>("login");
-
   const isLoggedIn = !!user;
 
   const refreshUser = async () => {
