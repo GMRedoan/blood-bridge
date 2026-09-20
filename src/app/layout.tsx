@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import Provider from "@/providers/Provider";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { getUser } from "@/server/user/user.service";
-import AuthDialog from "@/components/Shared/auth/AuthDialog";
+import AuthDialog from "@/components/home/auth/AuthDialog";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 

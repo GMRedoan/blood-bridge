@@ -16,3 +16,18 @@ export interface GetUserResponse {
   message: string;
   data: { profile: IUserProfile };
 }
+
+export interface ILoginPayload {
+  email: string;
+  password: string;
+}
+
+export interface Response {
+  success: boolean;
+  message: string;
+  data?: {
+    accessToken: string;
+    refreshToken: string;
+  };
+}
+

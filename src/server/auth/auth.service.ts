@@ -1,6 +1,68 @@
 "use server";
 
+import { ILoginPayload, Response } from "@/types/auth/auth";
 import { cookies } from "next/headers";
+import { loginSchema } from "../../../validation/auth.schema";
+import serverFetch from "@/lib/serverFetch";
+
+// login
+export const login = async (payload: ILoginPayload) => {
+  try {
+    const validatedPayload = await loginSchema.safeParseAsync(payload);
+
+    if (!validatedPayload.success) {
+      return {
+        success: false,
+        message: validatedPayload.error.message,
+      };
+    }
+    const result = await serverFetch.post<Response>(
+      "/auth/login",
+      validatedPayload.data,
+    );
+
+    if (!result.success || !result.data) {
+      return {
+        success: false,
+        message: result.message,
+      };
+    }
+
+    const { accessToken, refreshToken } = result.data;
+
+    const cookieStore = await cookies();
+
+    // store token
+    cookieStore.set("accessToken", accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60,
+    });
+    cookieStore.set("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 30,
+    });
+
+    return {
+      success: true,
+      message: result.message,
+      accessToken,
+      refreshToken,
+    };
+  } catch (error) {
+    console.error("LOGIN ERROR:", error);
+    return {
+      success: false,
+      message: "Login failed. Please try again.",
+    };
+  }
+};
+
 
 // log out
 export async function logout() {
