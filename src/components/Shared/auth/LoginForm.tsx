@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/providers/AuthProvider";
 import z from "zod";
-import { loginSchema } from "../../../../validation/auth.schema";
+import { loginSchema } from "../../../validation/auth.schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Swal from "sweetalert2";
@@ -11,63 +11,77 @@ import { demoCredentials } from "./_components/demoCredentials";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Home, Loader2, ShieldCheck, UserRound } from "lucide-react";
+import { EyeOff, Eye, Loader2, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { login } from "@/server/auth/auth.service";
+import { BiDonateBlood } from "react-icons/bi";
+import { MdOutlineSick } from "react-icons/md";
+import Animate from "@/components/Reusable/Animate";
+import { useState } from "react";
 
 type LoginData = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
+  const [showPassword, setShowPassword] = useState(false);
   const { setAuthStep, closeAuth } = useAuth();
-      const { refreshUser } = useAuth();
-      const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors, isSubmitting },
-      } = useForm<LoginData>({
-        resolver: zodResolver(loginSchema),
-      });
+  const { refreshUser } = useAuth();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    clearErrors,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginData>({
+    resolver: zodResolver(loginSchema),
+  });
 
-      const onSubmit = async (payload: LoginData) => {
-        try {
-          const result = await login(payload);
+  const onSubmit = async (payload: LoginData) => {
+    try {
+      clearErrors("root");
+      const result = await login(payload);
 
-          if (result.success) {
-            await refreshUser();
-            closeAuth();
-            Swal.fire({
-              title: "Welcome Back",
-              text: "You Successfully Logged in your account",
-              icon: "success",
-              confirmButtonColor: "#D43333",
-            });
-            reset();
-          } else {
-            Toast({
-              icon: "error",
-              title: result?.message || "Login failed",
-            });
-          }
-        } catch (error) {
-          console.error("LOGIN ERROR:", error);
-          return error;
-        }
-      };
-
-      const handleDemoLogin = async (role: "admin" | "donor" | "patient") => {
-        const credentials = demoCredentials[role];
-
-        reset({
-          email: credentials.email,
-          password: credentials.password,
+      if (result.success) {
+        await refreshUser();
+        closeAuth();
+        Swal.fire({
+          title: "Welcome Back",
+          text: "You Successfully Logged in your account",
+          icon: "success",
+          confirmButtonColor: "#D43333",
         });
+        reset();
+      } else {
+        const message = result?.message || "Login failed";
 
-        await onSubmit(credentials);
-      };
+        Toast({
+          icon: "error",
+          title: message,
+        });
+        setError("root", {
+          type: "server",
+          message,
+        });
+      }
+    } catch (error) {
+      console.error("LOGIN ERROR:", error);
+      return error;
+    }
+  };
+
+  const handleDemoLogin = async (role: "admin" | "donor" | "patient") => {
+    const credentials = demoCredentials[role];
+
+    reset({
+      email: credentials.email,
+      password: credentials.password,
+    });
+
+    await onSubmit(credentials);
+  };
 
   return (
-    <div className="space-y-6">
+    <Animate type="fadeLeft" duration={0.2} className="space-y-6 py-6 px-3">
       {/* Header */}
       <div>
         <h2 className="text-3xl font-bold">Welcome Back</h2>
@@ -103,23 +117,34 @@ export function LoginForm() {
             <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
 
             <Input
-              type="password"
+              type={showPassword ? "text" : "password"}
               {...register("password")}
               placeholder="Enter your password"
-              className="pl-11 h-12"
+              className="pl-11 pr-11 h-12"
             />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
           </div>
 
-          {errors.password && (
-            <p className="text-sm text-destructive">
-              {errors.password.message}
-            </p>
+          {errors.root?.message && (
+            <p className="text-sm text-destructive">{errors.root.message}</p>
           )}
         </div>
 
         <Button
           type="submit"
-          className="w-full h-12 text-white font-semibold"
+          className="w-full h-12 text-white font-semibold cursor-pointer"
           disabled={isSubmitting}
         >
           {isSubmitting ? (
@@ -140,19 +165,19 @@ export function LoginForm() {
         </div>
 
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-3 text-muted-foreground">
+          <span className="px-3 text-muted-foreground">
             Demo Accounts Login
           </span>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
+      <Animate type="zoom" duration={0.6} className="grid grid-cols-3 gap-2">
         <Button
           type="button"
           variant="outline"
           disabled={isSubmitting}
           onClick={() => handleDemoLogin("admin")}
-          className="h-auto flex-col gap-1 py-3"
+          className="h-auto flex-col gap-1 py-3 cursor-pointer"
         >
           <ShieldCheck className="h-4 w-4 text-primary" />
           <span className="text-xs">Admin</span>
@@ -163,9 +188,9 @@ export function LoginForm() {
           variant="outline"
           disabled={isSubmitting}
           onClick={() => handleDemoLogin("donor")}
-          className="h-auto flex-col gap-1 py-3"
+          className="h-auto flex-col gap-1 py-3 cursor-pointer"
         >
-          <Home className="h-4 w-4 text-primary" />
+          <BiDonateBlood className="h-4 w-4 text-primary" />
           <span className="text-xs">Donor</span>
         </Button>
 
@@ -174,12 +199,12 @@ export function LoginForm() {
           variant="outline"
           disabled={isSubmitting}
           onClick={() => handleDemoLogin("patient")}
-          className="h-auto flex-col gap-1 py-3"
+          className="h-auto flex-col gap-1 py-3 cursor-pointer"
         >
-          <UserRound className="h-4 w-4 text-primary" />
+          <MdOutlineSick className="h-4 w-4 text-primary" />
           <span className="text-xs">Patient</span>
         </Button>
-      </div>
+      </Animate>
 
       {/* Register */}
       <div className="text-center text-sm">
@@ -188,11 +213,11 @@ export function LoginForm() {
         <button
           type="button"
           onClick={() => setAuthStep("register")}
-          className="ml-1 font-semibold text-primary hover:underline"
+          className="ml-1 font-semibold text-primary hover:underline cursor-pointer"
         >
           Register
         </button>
       </div>
-    </div>
+    </Animate>
   );
 }

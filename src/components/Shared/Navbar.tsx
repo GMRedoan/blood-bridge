@@ -104,7 +104,7 @@ const Navbar = ({ menu = defaultMenu }: NavbarProps) => {
         icon: "success",
         title: "Logout successful",
         text: "You have been logged out successfully",
-        confirmButtonColor: "#4CAF50",
+        confirmButtonColor: "#D43333",
       });
     } catch (error: any) {
       Toast({

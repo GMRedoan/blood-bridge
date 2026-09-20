@@ -1,9 +1,89 @@
 "use server";
 
-import { ILoginPayload, Response } from "@/types/auth/auth";
+import { CreateUserResponse, ICreateUser, ILoginPayload, Response } from "@/types/auth/auth";
 import { cookies } from "next/headers";
-import { loginSchema } from "../../../validation/auth.schema";
+import { createUserSchema, loginSchema } from "@/validation/auth.schema";
 import serverFetch from "@/lib/serverFetch";
+
+// register
+export const registerUser = async (payload: ICreateUser) => {
+    try {
+        const validatedPayload = await createUserSchema.safeParseAsync(payload);
+
+        if (!validatedPayload.success) {
+            return {
+                success: false,
+                message: validatedPayload.error.message,
+            };
+        }
+        const result = await serverFetch.post<CreateUserResponse>("/auth/register", validatedPayload.data);
+
+        if (!result.success) {
+            return {
+                success: false,
+                message: result.message,
+            };
+        }
+        return {
+            success: true,
+            message: result.message,
+        };
+
+    } catch (error) {
+        console.error("REGISTER ERROR:", error);
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : "Something went wrong",
+        };
+    }
+}
+
+// verify-email
+export const verifyEmail = async () => {
+  try {
+    const result = await serverFetch.post<Response>("/auth/verify-email");
+        if (!result.success || !result.data) {
+          return {
+            success: false,
+            message: result.message,
+          };
+        }
+
+        const { accessToken, refreshToken } = result.data;
+
+        const cookieStore = await cookies();
+
+        // store token
+        cookieStore.set("accessToken", accessToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+          maxAge: 7 * 24 * 60 * 60,
+        });
+        cookieStore.set("refreshToken", refreshToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "lax",
+          path: "/",
+          maxAge: 7 * 24 * 60 * 60 * 30,
+        });
+
+        return {
+          success: true,
+          message: result.message,
+          accessToken,
+          refreshToken,
+        };
+     
+  } catch (error) {
+        console.error("Verification Error:", error);
+        return {
+          success: false,
+          message: "Verification failed. Please try again.",
+        };
+  }
+}
 
 // login
 export const login = async (payload: ILoginPayload) => {
@@ -62,7 +142,6 @@ export const login = async (payload: ILoginPayload) => {
     };
   }
 };
-
 
 // log out
 export async function logout() {

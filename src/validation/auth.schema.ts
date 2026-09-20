@@ -15,8 +15,8 @@ export const createUserSchema = z.object({
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).*$/,
       "Password must contain uppercase, lowercase, number, and special character",
-    )
-    .optional(),
+    ),
+  city: z.string().min(1, "City is required"),
   role: userRoleEnum.optional(),
 });
 
