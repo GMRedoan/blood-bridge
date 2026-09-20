@@ -6,27 +6,34 @@ import { useForm } from "react-hook-form";
 import { Loader2, MailCheck, RotateCcw } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
 import { Button } from "@/components/ui/button";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-
-interface VerifyEmailData {
-  email: string;
-  otp: string;
-}
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { verifyEmail } from "@/server/auth/auth.service";
+import Swal from "sweetalert2";
+import { Toast } from "@/components/Reusable/Toast";
+import { IVerifyEmailPayload } from "@/types/auth/auth";
 
 export function VerifyEmailForm() {
-  const { setAuthStep, verificationEmail, setPendingVerificationEmail } =
-    useAuth();
+  const {
+    setAuthStep,
+    closeAuth,
+    refreshUser,
+    verificationEmail,
+    setPendingVerificationEmail,
+  } = useAuth();
   const [resendLoading, setResendLoading] = useState(false);
-  const [resendCooldown, setResendCooldown] = useState(0);
+  const [resendCooldown, setResendCooldown] = useState(30);
 
   const {
     handleSubmit,
     setValue,
-    setError,
     clearErrors,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<VerifyEmailData>({
+  } = useForm<IVerifyEmailPayload>({
     defaultValues: {
       email: verificationEmail,
       otp: "",
@@ -46,10 +53,27 @@ export function VerifyEmailForm() {
     return () => clearInterval(timer);
   }, [resendCooldown]);
 
-  const onSubmit = async (data: VerifyEmailData) => {
+  const onSubmit = async (payload: IVerifyEmailPayload) => {
     try {
       clearErrors();
- 
+      const result = await verifyEmail(payload);
+
+      if (result.success) {
+        await refreshUser();
+        setPendingVerificationEmail(null);
+        closeAuth();
+        Swal.fire({
+          icon: "success",
+          title: "Email Verified",
+          text: "Welcome to the Blood Bridge!",
+          confirmButtonColor: "#D43333",
+        })
+      } else {
+         Toast({
+           icon: "error",
+           title: result?.message || "Verification failed",
+         })
+      }
     } catch (error) {
       console.error("VERIFY EMAIL ERROR:", error);
     }
@@ -137,7 +161,7 @@ export function VerifyEmailForm() {
         <Button
           type="submit"
           disabled={isSubmitting || code?.length !== 6}
-          className="h-12 w-full font-semibold"
+          className="h-12 w-full font-semibold cursor-pointer"
         >
           {isSubmitting ? (
             <>
@@ -185,13 +209,12 @@ export function VerifyEmailForm() {
       <div className="border-t pt-5 text-center">
         <button
           type="button"
-          onClick={() => setAuthStep("login")}
-          className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+          onClick={() => setAuthStep("register")}
+          className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary cursor-pointer"
         >
-          Back to Login
+          Back to Register
         </button>
       </div>
     </div>
   );
 }
- 

@@ -76,7 +76,6 @@ const defaultMenu: MenuItem[] = [
 const Navbar = ({ menu = defaultMenu }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false);
   const { user, setUser, isLoggedIn } = useAuth();
-
   // Scroll effect
   useEffect(() => {
     const handleScroll = () => {
@@ -227,7 +226,7 @@ const AuthButtons = ({ isLoggedIn, user, handleLogOut }: any) => {
         <div className="w-fit">
           <Link
             href={"/dashboard"}
-            className="text-md font-semibold text-foreground lg:text-foreground bg-muted px-4 py-2 rounded-full hover:bg-muted/80 transition-colors duration-300 hover:text-primary border border-border/60"
+            className="text-sm font-semibold lg:text-foreground bg-muted px-4 py-2 rounded-full hover:bg-muted/80 transition-colors duration-300 hover:text-primary border border-border/60"
           >
             Dashboard
           </Link>
@@ -242,8 +241,7 @@ const AuthButtons = ({ isLoggedIn, user, handleLogOut }: any) => {
           <button
             onClick={handleAuthClick}
             className="group flex h-10 items-center gap-2 rounded-xl bg-primary/10 px-4 text-sm font-semibold text-primary
-            transition-all duration-300 hover:bg-primary hover:text-primary-foreground cursor-pointer
-  "
+            transition-all duration-300 hover:bg-primary hover:text-primary-foreground cursor-pointer"
           >
             <span>
               {pendingVerificationEmail ? "Verify Email" : "Login / Register"}

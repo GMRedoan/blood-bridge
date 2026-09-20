@@ -12,6 +12,11 @@ export interface CreateUserResponse {
   message: string;
 }
 
+export interface IVerifyEmailPayload {
+  email: string;
+  otp: string;
+}
+
 export interface ILoginPayload {
   email: string;
   password: string;

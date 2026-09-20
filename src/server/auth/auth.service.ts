@@ -1,6 +1,6 @@
 "use server";
 
-import { CreateUserResponse, ICreateUser, ILoginPayload, Response } from "@/types/auth/auth";
+import { CreateUserResponse, ICreateUser, ILoginPayload, IVerifyEmailPayload, Response } from "@/types/auth/auth";
 import { cookies } from "next/headers";
 import { createUserSchema, loginSchema } from "@/validation/auth.schema";
 import serverFetch from "@/lib/serverFetch";
@@ -39,9 +39,9 @@ export const registerUser = async (payload: ICreateUser) => {
 }
 
 // verify-email
-export const verifyEmail = async () => {
+export const verifyEmail = async (payload: IVerifyEmailPayload) => {
   try {
-    const result = await serverFetch.post<Response>("/auth/verify-email");
+    const result = await serverFetch.post<Response>("/auth/verify-email", payload);
         if (!result.success || !result.data) {
           return {
             success: false,
