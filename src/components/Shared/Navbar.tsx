@@ -7,6 +7,7 @@ import {
   ChevronRight,
   LogIn,
   LogOut,
+  MailCheck,
   Menu,
   Phone,
   Shield,
@@ -207,7 +208,19 @@ const DesktopMenu = ({ menu, user, isLoggedIn, handleLogOut }: any) => {
 
 // ====================== Auth ======================
 const AuthButtons = ({ isLoggedIn, user, handleLogOut }: any) => {
-  const { openLogin } = useAuth();
+  const { 
+    openLogin,
+    openVerifyEmail,
+    pendingVerificationEmail 
+  } = useAuth();
+
+  const handleAuthClick = () => {
+  if (pendingVerificationEmail) {
+    openVerifyEmail();
+    return;
+  }
+  openLogin();
+};
   return (
     <div className="flex flex-col lg:flex-row lg:items-center gap-4">
       {user ? (
@@ -227,15 +240,21 @@ const AuthButtons = ({ isLoggedIn, user, handleLogOut }: any) => {
         <ThemeToggle />
         {!isLoggedIn ? (
           <button
-            onClick={openLogin}
+            onClick={handleAuthClick}
             className="group flex h-10 items-center gap-2 rounded-xl bg-primary/10 px-4 text-sm font-semibold text-primary
             transition-all duration-300 hover:bg-primary hover:text-primary-foreground cursor-pointer
   "
           >
-            <span>Login / Register</span>
+            <span>
+              {pendingVerificationEmail ? "Verify Email" : "Login / Register"}
+            </span>
 
             <span>
-               <LogIn size={16}/>
+              {pendingVerificationEmail ? (
+                <MailCheck size={16} />
+              ) : (
+                <LogIn size={16} />
+              )}
             </span>
           </button>
         ) : (

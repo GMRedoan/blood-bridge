@@ -1,46 +1,197 @@
+/* eslint-disable react-hooks/incompatible-library */
 "use client";
 
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Loader2, MailCheck, RotateCcw } from "lucide-react";
 import { useAuth } from "@/providers/AuthProvider";
+import { Button } from "@/components/ui/button";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 
+interface VerifyEmailData {
+  email: string;
+  otp: string;
+}
 
 export function VerifyEmailForm() {
-  const { closeAuth } = useAuth();
+  const { setAuthStep, verificationEmail, setPendingVerificationEmail } =
+    useAuth();
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
-  const handleVerify = async () => {
-    // API call
-    // verify email code
+  const {
+    handleSubmit,
+    setValue,
+    setError,
+    clearErrors,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<VerifyEmailData>({
+    defaultValues: {
+      email: verificationEmail,
+      otp: "",
+    },
+  });
 
-    const verified = true;
+  const code = watch("otp");
 
-    if (verified) {
-      closeAuth();
+  // Countdown after resend
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+
+    const timer = setInterval(() => {
+      setResendCooldown((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
+
+  const onSubmit = async (data: VerifyEmailData) => {
+    try {
+      clearErrors();
+ 
+    } catch (error) {
+      console.error("VERIFY EMAIL ERROR:", error);
     }
+  };
 
+  const handleResendCode = async () => {
+    if (resendCooldown > 0 || resendLoading) return;
+
+    try {
+      setResendLoading(true);
+
+      setResendCooldown(60);
+    } catch (error) {
+      console.error("RESEND CODE ERROR:", error);
+    } finally {
+      setResendLoading(false);
+    }
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold">Verify Your Email</h2>
+    <div className="space-y-6 px-3 py-6">
+      {/* Header */}
+      <div className="text-center">
+        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <MailCheck className="h-7 w-7" />
+        </div>
 
-        <p className="mt-1 text-sm text-muted-foreground">
-          Enter the verification code sent to your email.
+        <h2 className="text-2xl font-bold tracking-tight">Verify Your Email</h2>
+
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+          We&apos;ve sent a 6-digit verification code to
         </p>
+
+        {verificationEmail && (
+          <p className="mt-1 font-semibold text-foreground">
+            {verificationEmail}
+          </p>
+        )}
       </div>
 
-      {/* OTP Input */}
-      <div>{/* OTP component */}</div>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* OTP */}
+        <div className="space-y-3">
+          <div className="flex justify-center">
+            <InputOTP
+              maxLength={6}
+              value={code}
+              onChange={(value) => {
+                setValue("otp", value, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
 
-      <button onClick={handleVerify} className="w-full">
-        Verify Email
-      </button>
+                if (errors.root) {
+                  clearErrors("root");
+                }
+              }}
+              disabled={isSubmitting}
+            >
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+          </div>
 
-      <button
-        type="button"
-        className="w-full text-sm text-muted-foreground hover:text-primary"
-      >
-        Resend Code
-      </button>
+          {errors.root?.message && (
+            <p className="text-center text-sm text-destructive">
+              {errors.root.message}
+            </p>
+          )}
+
+          {errors.otp?.message && (
+            <p className="text-center text-sm text-destructive">
+              {errors.otp.message}
+            </p>
+          )}
+        </div>
+
+        {/* Verify */}
+        <Button
+          type="submit"
+          disabled={isSubmitting || code?.length !== 6}
+          className="h-12 w-full font-semibold"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Verifying...
+            </>
+          ) : (
+            "Verify Email"
+          )}
+        </Button>
+      </form>
+
+      {/* Resend */}
+      <div className="text-center">
+        <p className="text-sm text-muted-foreground">
+          Didn&apos;t receive the code?
+        </p>
+
+        <button
+          type="button"
+          onClick={handleResendCode}
+          disabled={resendCooldown > 0 || resendLoading}
+          className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-primary transition-colors hover:text-primary/80 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {resendLoading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Sending...
+            </>
+          ) : resendCooldown > 0 ? (
+            <>
+              <RotateCcw className="h-4 w-4" />
+              Resend code in {resendCooldown}s
+            </>
+          ) : (
+            <>
+              <RotateCcw className="h-4 w-4" />
+              Resend Code
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Back */}
+      <div className="border-t pt-5 text-center">
+        <button
+          type="button"
+          onClick={() => setAuthStep("login")}
+          className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+        >
+          Back to Login
+        </button>
+      </div>
     </div>
   );
 }
+ 

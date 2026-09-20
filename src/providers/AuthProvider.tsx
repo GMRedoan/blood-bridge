@@ -21,8 +21,15 @@ interface AuthContextType {
 
   openLogin: () => void;
   openRegister: () => void;
+  openVerifyEmail: () => void;
   closeAuth: () => void;
   setAuthStep: (step: AuthStep) => void;
+
+  // Verification
+  verificationEmail: string;
+  setVerificationEmail: (email: string) => void;
+  pendingVerificationEmail: string | null;
+  setPendingVerificationEmail: (email: string | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -38,6 +45,10 @@ export function AuthProvider({
   const [authOpen, setAuthOpen] = useState(false);
   const [authStep, setAuthStep] = useState<AuthStep>("login");
   const isLoggedIn = !!user;
+  const [verificationEmail, setVerificationEmail] = useState("");
+  const [pendingVerificationEmail, setPendingVerificationEmail] = useState<
+    string | null
+  >(null);
 
   const refreshUser = async () => {
     const res = await getUser();
@@ -59,6 +70,14 @@ export function AuthProvider({
     setAuthOpen(true);
   };
 
+  const openVerifyEmail = () => {
+    if (!pendingVerificationEmail) return;
+
+    setVerificationEmail(pendingVerificationEmail);
+    setAuthStep("verify-email");
+    setAuthOpen(true);
+  };
+
   const closeAuth = () => {
     setAuthOpen(false);
   };
@@ -77,8 +96,13 @@ export function AuthProvider({
         authStep,
         openLogin,
         openRegister,
+        openVerifyEmail,
         closeAuth,
         setAuthStep,
+        verificationEmail,
+        setVerificationEmail,
+        pendingVerificationEmail,
+        setPendingVerificationEmail,
       }}
     >
       {children}

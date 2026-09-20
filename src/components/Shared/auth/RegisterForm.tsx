@@ -28,7 +28,12 @@ type FormData = z.infer<typeof createUserSchema>;
 
 export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const { setAuthStep, refreshUser } = useAuth();
+  const {
+    setAuthStep,
+    refreshUser,
+    setVerificationEmail,
+    setPendingVerificationEmail,
+  } = useAuth();
 
   const {
     register,
@@ -59,6 +64,8 @@ export function RegisterForm() {
             title: result.message,
           });
           await refreshUser();
+          setVerificationEmail(payload.email);
+          setPendingVerificationEmail(payload.email);
           setAuthStep("verify-email");
     } else {
       Toast({
