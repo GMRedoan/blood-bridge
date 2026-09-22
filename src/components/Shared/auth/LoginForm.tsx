@@ -11,7 +11,7 @@ import { demoCredentials } from "./_components/demoCredentials";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { EyeOff, Eye, Loader2, ShieldCheck } from "lucide-react";
+import { EyeOff, Eye, Loader2, ShieldCheck, Hospital } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { login } from "@/server/auth/auth.service";
 import { BiDonateBlood } from "react-icons/bi";
@@ -69,7 +69,7 @@ export function LoginForm() {
     }
   };
 
-  const handleDemoLogin = async (role: "admin" | "donor" | "patient") => {
+  const handleDemoLogin = async (role: "admin" | "donor" | "patient" | "hospital") => {
     const credentials = demoCredentials[role];
 
     reset({
@@ -171,7 +171,7 @@ export function LoginForm() {
         </div>
       </div>
 
-      <Animate type="zoom" duration={0.6} className="grid grid-cols-3 gap-2">
+      <Animate type="zoom" duration={0.6} className="grid grid-cols-4 gap-1.5">
         <Button
           type="button"
           variant="outline"
@@ -203,6 +203,17 @@ export function LoginForm() {
         >
           <MdOutlineSick className="h-4 w-4 text-primary" />
           <span className="text-xs">Patient</span>
+        </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          disabled={isSubmitting}
+          onClick={() => handleDemoLogin("hospital")}
+          className="h-auto flex-col gap-1 py-3 cursor-pointer"
+        >
+          <Hospital className="h-4 w-4 text-primary" />
+          <span className="text-xs">Hospital</span>
         </Button>
       </Animate>
 

@@ -8,7 +8,11 @@ export const demoCredentials = {
     password: "Redu123#",
   },
   patient: {
-    email: "redoangazi69@gmail.com",
+    email: "redoangazi.f45@gmail.com",
+    password: "Redu123#",
+  },
+  hospital: {
+    email: "hospital@gmail.com",
     password: "Redu123#",
   },
 };

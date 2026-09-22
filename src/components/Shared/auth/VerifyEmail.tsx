@@ -15,6 +15,7 @@ import { verifyEmail } from "@/server/auth/auth.service";
 import Swal from "sweetalert2";
 import { Toast } from "@/components/Reusable/Toast";
 import { IVerifyEmailPayload } from "@/types/auth/auth";
+import Animate from "@/components/Reusable/Animate";
 
 export function VerifyEmailForm() {
   const {
@@ -94,7 +95,7 @@ export function VerifyEmailForm() {
   };
 
   return (
-    <div className="space-y-6 px-3 py-6">
+    <Animate type="fadeRight" duration={0.2} className="space-y-6 px-3 py-6">
       {/* Header */}
       <div className="text-center">
         <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
@@ -215,6 +216,6 @@ export function VerifyEmailForm() {
           Back to Register
         </button>
       </div>
-    </div>
+    </Animate>
   );
 }
