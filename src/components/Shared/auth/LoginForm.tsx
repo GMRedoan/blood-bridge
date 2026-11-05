@@ -22,6 +22,7 @@ import { useState } from "react";
 type LoginData = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { setAuthStep, closeAuth } = useAuth();
   const { refreshUser } = useAuth();
@@ -71,6 +72,7 @@ export function LoginForm() {
 
   const handleDemoLogin = async (role: "admin" | "donor" | "patient" | "hospital") => {
     const credentials = demoCredentials[role];
+    setIsDemoLoading(true);
 
     reset({
       email: credentials.email,
@@ -78,6 +80,8 @@ export function LoginForm() {
     });
 
     await onSubmit(credentials);
+
+    setIsDemoLoading(false);
   };
 
   return (
@@ -145,9 +149,9 @@ export function LoginForm() {
         <Button
           type="submit"
           className="w-full h-12 text-white font-semibold cursor-pointer"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isDemoLoading}
         >
-          {isSubmitting ? (
+          {isSubmitting || isDemoLoading ? (
             <>
               Signing In...
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -175,7 +179,7 @@ export function LoginForm() {
         <Button
           type="button"
           variant="outline"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isDemoLoading}
           onClick={() => handleDemoLogin("admin")}
           className="h-auto flex-col gap-1 py-3 cursor-pointer"
         >
@@ -186,7 +190,7 @@ export function LoginForm() {
         <Button
           type="button"
           variant="outline"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isDemoLoading}
           onClick={() => handleDemoLogin("donor")}
           className="h-auto flex-col gap-1 py-3 cursor-pointer"
         >
@@ -197,7 +201,7 @@ export function LoginForm() {
         <Button
           type="button"
           variant="outline"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isDemoLoading}
           onClick={() => handleDemoLogin("patient")}
           className="h-auto flex-col gap-1 py-3 cursor-pointer"
         >
@@ -208,7 +212,7 @@ export function LoginForm() {
         <Button
           type="button"
           variant="outline"
-          disabled={isSubmitting}
+          disabled={isSubmitting || isDemoLoading}
           onClick={() => handleDemoLogin("hospital")}
           className="h-auto flex-col gap-1 py-3 cursor-pointer"
         >

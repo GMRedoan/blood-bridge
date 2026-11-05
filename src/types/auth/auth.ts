@@ -5,6 +5,7 @@ export interface ICreateUser {
   password: string;
   city: string;
   role?: "PATIENT" | "DONOR" | "HOSPITAL";
+  profilePhoto?: string;
 }
 
 export interface CreateUserResponse {
@@ -29,23 +30,4 @@ export interface Response {
     accessToken: string;
     refreshToken: string;
   };
-}
-
-export interface IUserProfile {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  profilePhoto: string | null;
-  bio: string | null;
-  role: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface GetUserResponse {
-  success: boolean;
-  message: string;
-  data: { profile: IUserProfile };
 }

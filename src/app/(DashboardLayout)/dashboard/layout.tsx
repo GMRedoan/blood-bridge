@@ -20,7 +20,7 @@ export default function DashboardLayout({
       <SidebarInset>
         <DashboardNavbar />
 
-        <main className="flex-1 p-6 bg-muted/30 min-h-screen">{children}</main>
+        <main className="flex-1 bg-muted/30 min-h-screen">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );
