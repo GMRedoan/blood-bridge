@@ -27,7 +27,7 @@ export const getUser = async () => {
 export const updateUser = async (payload: IUpdateUser) => {
   try {
     const res = await serverFetch.patch<GetUserResponse>("/auth/me", payload);
-    if (!res.success || !res.data.profile) {
+    if (!res.success) {
       return {
         success: false,
         message: res.message,
@@ -37,11 +37,16 @@ export const updateUser = async (payload: IUpdateUser) => {
 
     return {
       success: true,
+      message: res.message,
       data: res.data.profile,
     };
   } catch (error) {
     console.error("Error updating user data:", error);
-    throw error;
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Something went wrong",
+      data: null,
+    };
   }
 };
  

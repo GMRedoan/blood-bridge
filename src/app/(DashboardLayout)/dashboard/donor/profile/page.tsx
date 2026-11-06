@@ -2,7 +2,7 @@ import { getUser } from '@/server/user/user.service';
 import ViewProfile from '../../admin/profile/components/ViewProfile';
 
 export const metadata = {
-    title: "Donor Profile",
+    title: "Donor Profile | Dashboard",
     description: "Donor profile page",
 };
 

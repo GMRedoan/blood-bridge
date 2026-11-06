@@ -25,7 +25,12 @@ import { IGetUserProfile } from "@/types/user/user";
 import Image from "next/image";
 import { DonorStat, ProfileInfo } from "@/components/Reusable/profile";
 import InfoDialog from "./infoDialog";
-import { formatBloodGroup } from "@/types/donor/donor";
+import { BloodGroup, formatBloodGroup } from "@/types/donor/donor";
+import EditProfileDialog from "./editProfileDialog";
+import SetBloodGroupDialog from "./setBloodGroupDialog";
+import { useRouter } from "next/navigation";
+import { createDonorProfile } from "@/server/donor/donor.service";
+import { Toast } from "@/components/Reusable/Toast";
 
 const formatDate = (date: Date | string | null) => {
   if (!date) return "N/A";
@@ -42,13 +47,16 @@ interface viewProfileProps {
 }
 
 export default function ViewProfile({ profile }: viewProfileProps) {
+  const router = useRouter();
   const [editOpen, setEditOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const [showDonorDetails, setShowDonorDetails] = useState(true);
+  const [bloodGroupOpen, setBloodGroupOpen] = useState(false);
 
   const donor = profile?.donorProfile;
-  console.log("Donor Profile:", donor);
- 
+  const isDonor = profile.role?.toLowerCase() === "donor";
+  const hasBloodGroup = Boolean(donor?.bloodGroup);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-background">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -173,7 +181,6 @@ export default function ViewProfile({ profile }: viewProfileProps) {
             </Card>
           </Animate>
 
-          {/* Account Overview */}
           <Animate type="fadeUp" delay={0.2}>
             <div>
               {/* Donor Membership */}
@@ -190,65 +197,89 @@ export default function ViewProfile({ profile }: viewProfileProps) {
                     </span>
                   </div>
 
-                  {donor ? (
+                  {isDonor ? (
                     <>
+                      {/* Blood Group */}
                       <div>
                         <p className="text-md text-muted-foreground">
                           Your blood group
                         </p>
 
-                        <div className="mt-1 flex items-center gap-3">
-                          <span className="text-3xl font-bold text-primary">
-                            {formatBloodGroup(donor?.bloodGroup)}
-                          </span>
+                        <div className="mt-2 flex items-center gap-3">
+                          {hasBloodGroup ? (
+                            <>
+                              <span className="text-3xl font-bold text-primary">
+                                {formatBloodGroup(donor?.bloodGroup)}
+                              </span>
 
-                          <Droplet className="h-8 w-8 fill-primary/20 text-primary" />
+                              <Droplet className="h-8 w-8 fill-primary/20 text-primary" />
+                            </>
+                          ) : (
+                            <div className="space-y-2">
+                              <p className="text-sm text-muted-foreground">
+                                You have not added your blood group yet.
+                              </p>
+
+                              <Button
+                                size="sm"
+                                onClick={() => setBloodGroupOpen(true)}
+                                className="gap-2"
+                              >
+                                <Droplet className="h-4 w-4" />
+                                Set Blood Group
+                              </Button>
+                            </div>
+                          )}
                         </div>
                       </div>
 
-                      <Badge
-                        className={
-                          profile.donorProfile?.isAvailable
-                            ? "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10"
-                            : "bg-amber-500/10 text-amber-600 hover:bg-amber-500/10"
-                        }
-                      >
-                        <span
-                          className={`mr-1.5 h-2 w-2 rounded-full ${
-                            donor.isAvailable
-                              ? "bg-emerald-500"
-                              : "bg-amber-500"
-                          }`}
-                        />
+                      {hasBloodGroup && (
+                        <>
+                          <Badge
+                            className={
+                              donor?.isAvailable
+                                ? "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/10"
+                                : "bg-amber-500/10 text-amber-600 hover:bg-amber-500/10"
+                            }
+                          >
+                            <span
+                              className={`mr-1.5 h-2 w-2 rounded-full ${
+                                donor?.isAvailable
+                                  ? "bg-emerald-500"
+                                  : "bg-amber-500"
+                              }`}
+                            />
 
-                        {donor.isAvailable
-                          ? "Available to donate"
-                          : "Currently unavailable"}
-                      </Badge>
+                            {donor?.isAvailable
+                              ? "Available to donate"
+                              : "Currently unavailable"}
+                          </Badge>
 
-                      <Separator className="bg-primary/10" />
+                          <Separator className="bg-primary/10" />
 
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-xs text-muted-foreground">
-                            Total Donations
-                          </p>
-                          <p className="mt-1 text-lg font-bold">
-                            {profile.donorProfile?.totalDonations}
-                          </p>
-                        </div>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <p className="text-xs text-muted-foreground">
+                                Total Donations
+                              </p>
+                              <p className="mt-1 text-lg font-bold">
+                                {donor?.totalDonations ?? 0}
+                              </p>
+                            </div>
 
-                        <div>
-                          <p className="text-xs text-muted-foreground">
-                            Last Donation
-                          </p>
-                          <p className="mt-1 text-lg font-semibold">
-                            {donor.lastDonationDate
-                              ? formatDate(donor.lastDonationDate)
-                              : "No donation yet"}
-                          </p>
-                        </div>
-                      </div>
+                            <div>
+                              <p className="text-xs text-muted-foreground">
+                                Last Donation
+                              </p>
+                              <p className="mt-1 text-lg font-semibold">
+                                {donor?.lastDonationDate
+                                  ? formatDate(donor.lastDonationDate)
+                                  : "No donation yet"}
+                              </p>
+                            </div>
+                          </div>
+                        </>
+                      )}
 
                       <Button
                         variant="outline"
@@ -337,14 +368,29 @@ export default function ViewProfile({ profile }: viewProfileProps) {
         )}
       </main>
 
-      {/* Edit Dialog */}
-      {/* <EditProfileDialog
+      <EditProfileDialog
         open={editOpen}
         onOpenChange={setEditOpen}
         profile={profile}
-      /> */}
-
+      />
+      
       <InfoDialog onOpenChange={setInfoOpen} open={infoOpen} />
+
+      <SetBloodGroupDialog
+        open={bloodGroupOpen}
+        onOpenChange={setBloodGroupOpen}
+        onSave={async (bloodGroup: BloodGroup) => {
+          const result = await createDonorProfile(bloodGroup);
+          Toast({
+            title: result.success
+              ? "Blood Group Added Successfully"
+              : "Something went wrong",
+            icon: result.success ? "success" : "error",
+          });
+          router.refresh();
+          return result;
+        }}
+      />
     </div>
   );
 }

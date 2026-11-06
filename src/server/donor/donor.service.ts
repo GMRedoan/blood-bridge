@@ -7,7 +7,7 @@ export const createDonorProfile = async ( bloodGroup: BloodGroup) => {
         try {   
             const result = await serverFetch.post<ICreateDonorResponse>(
               "/donor/donor-profile",
-              bloodGroup,
+              {bloodGroup: bloodGroup},
             );
     
             if (!result.success) {
@@ -35,7 +35,7 @@ export const updateDonorProfile = async (bloodGroup?: BloodGroup) => {
     try {
         const result = await serverFetch.patch<ICreateDonorResponse>(
             "/donor/donor-profile/me",
-            bloodGroup,
+            {bloodGroup},
         );
 
         if (!result.success) {

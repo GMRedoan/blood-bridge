@@ -1,4 +1,4 @@
-import { IDonorProfile } from "../donor/donor";
+import { BloodGroup, IDonorProfile } from "../donor/donor";
 
 export interface IGetUserProfile {
   id: string;
@@ -29,4 +29,15 @@ export interface IUpdateUser {
   city?: string;
   area?: string;
   profilePhoto?: string | null;
+}
+
+export interface editProfileData {
+  name: string;
+  email: string;
+  phone: string;
+  city: string;
+  area: string;
+  donorProfile?: {
+    bloodGroup: BloodGroup;
+  } | null;
 }
