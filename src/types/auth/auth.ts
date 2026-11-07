@@ -13,6 +13,20 @@ export interface CreateUserResponse {
   message: string;
 }
 
+// export interface IUserProfile {
+//   id: string;
+//   name: string;
+//   email: string;
+//   phone: string;
+//   city: string;
+//   role: "PATIENT" | "DONOR" | "HOSPITAL" | "ADMIN";
+//   profilePhoto?: string;
+//   isEmailVerified: boolean;
+//   isDeleted: boolean;
+//   createdAt: string;
+//   updatedAt: string;
+// }
+
 export interface IVerifyEmailPayload {
   email: string;
   otp: string;
@@ -30,4 +44,8 @@ export interface Response {
     accessToken: string;
     refreshToken: string;
   };
+}
+
+export interface IGoogleLoginPayload {
+  idToken: string;
 }

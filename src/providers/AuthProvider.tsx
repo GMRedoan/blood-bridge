@@ -1,7 +1,8 @@
 "use client";
 
 import { getUser } from "@/server/user/user.service";
-import { IUserProfile } from "@/types/auth/auth";
+import { IGetUserProfile } from "@/types/user/user";
+// import { IUserProfile } from "@/types/auth/auth";
 import { createContext, useContext, useState } from "react";
 
 export type AuthStep =
@@ -11,8 +12,8 @@ export type AuthStep =
   | "success";
 
 interface AuthContextType {
-  user: IUserProfile | null;
-  setUser: (user: IUserProfile | null) => void;
+  user: IGetUserProfile | null;
+  setUser: (user: IGetUserProfile | null) => void;
   isLoggedIn: boolean;
   refreshUser: () => Promise<void>;
 
@@ -39,9 +40,9 @@ export function AuthProvider({
   initialUser,
 }: {
   children: React.ReactNode;
-  initialUser: IUserProfile | null;
+  initialUser: IGetUserProfile | null;
 }) {
-  const [user, setUser] = useState<IUserProfile | null>(initialUser);
+  const [user, setUser] = useState<IGetUserProfile | null>(initialUser);
   const [authOpen, setAuthOpen] = useState(false);
   const [authStep, setAuthStep] = useState<AuthStep>("login");
   const isLoggedIn = !!user;
@@ -54,7 +55,7 @@ export function AuthProvider({
     const res = await getUser();
 
     if (res.success) {
-      setUser(res.data);
+      setUser(res?.data as IGetUserProfile);
     } else {
       setUser(null);
     }

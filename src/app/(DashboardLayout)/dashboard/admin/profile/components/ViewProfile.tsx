@@ -101,13 +101,15 @@ export default function ViewProfile({ profile }: viewProfileProps) {
 
               <CardHeader>
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <Image
-                    src={profile?.profilePhoto || "/placeholder.svg"}
-                    alt={profile?.name}
-                    width={80}
-                    height={80}
-                    className="rounded-2xl border border-primary/40 object-cover hover:border-primary/60"
-                  />
+                  <div className="relative h-22 w-22 shrink-0 overflow-hidden rounded-2xl border border-primary/40 bg-base-200">
+                    <Image
+                      src={profile?.profilePhoto || "/placeholder.svg"}
+                      alt={profile?.name || "Profile photo"}
+                      fill
+                      sizes="128px"
+                      className="object-cover object-center border border-primary/40 hover:border-primary/60"
+                    />
+                  </div>
 
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
@@ -156,13 +158,13 @@ export default function ViewProfile({ profile }: viewProfileProps) {
                   <ProfileInfo
                     icon={<Phone />}
                     label="Phone Number"
-                    value={profile?.phone}
+                    value={profile?.phone ? profile.phone : "Not provided"}
                   />
 
                   <ProfileInfo
                     icon={<MapPin />}
                     label="City"
-                    value={profile?.city}
+                    value={profile?.city ? profile.city : "Not provided"}
                   />
 
                   <ProfileInfo
@@ -373,7 +375,7 @@ export default function ViewProfile({ profile }: viewProfileProps) {
         onOpenChange={setEditOpen}
         profile={profile}
       />
-      
+
       <InfoDialog onOpenChange={setInfoOpen} open={infoOpen} />
 
       <SetBloodGroupDialog

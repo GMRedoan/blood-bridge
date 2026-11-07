@@ -6,6 +6,7 @@ import Provider from "@/providers/Provider";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { getUser } from "@/server/user/user.service";
 import AuthDialog from "@/components/Shared/auth/AuthDialog";
+import GoogleProvider from "@/providers/GoogleProvider";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -39,12 +40,14 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       )}
     >
       <body className="min-h-full flex flex-col">
-        <Provider>
-          <AuthProvider initialUser={user.success ? user.data : null}>
-            {children}
-            <AuthDialog/>
-          </AuthProvider>
-        </Provider>
+        <GoogleProvider>
+          <Provider>
+            <AuthProvider initialUser={user?.success ? user.data : null}>
+              {children}
+              <AuthDialog />
+            </AuthProvider>
+          </Provider>
+        </GoogleProvider>
       </body>
     </html>
   );

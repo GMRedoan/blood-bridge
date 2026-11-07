@@ -18,6 +18,7 @@ import { BiDonateBlood } from "react-icons/bi";
 import { MdOutlineSick } from "react-icons/md";
 import Animate from "@/components/Reusable/Animate";
 import { useState } from "react";
+import SocialLogin from "@/components/Reusable/SocialLogin";
 
 type LoginData = z.infer<typeof loginSchema>;
 
@@ -161,6 +162,8 @@ export function LoginForm() {
           )}
         </Button>
       </form>
+
+      <SocialLogin/>
 
       {/* Demo login */}
       <div className="relative my-6">

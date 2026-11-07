@@ -88,31 +88,45 @@ const Navbar = ({ menu = defaultMenu }: NavbarProps) => {
   }, []);
 
   // logout
-  const handleLogOut = async () => {
-    try {
-      const result = await logout();
+const handleLogOut = async () => {
+  const confirmation = await Swal.fire({
+    title: "Are you sure?",
+    text: "Do you really want to log out of your account?",
+    icon: "info",
+    showCancelButton: true,
+    confirmButtonColor: "#D43333",
+    cancelButtonColor: "#6B7280",
+    confirmButtonText: "Yes, Logout",
+    cancelButtonText: "Cancel",
+    reverseButtons: true,
+  });
 
-      if (!result.success) {
-        Toast({
-          icon: "error",
-          title: result?.message || "Login failed",
-        });
-        return;
-      }
-      setUser(null);
-      Swal.fire({
-        icon: "success",
-        title: "Logout successful",
-        text: "You have been logged out successfully",
-        confirmButtonColor: "#D43333",
-      });
-    } catch (error: any) {
+  if (!confirmation.isConfirmed) return;
+
+  try {
+    const result = await logout();
+
+    if (!result.success) {
       Toast({
         icon: "error",
-        title: error?.message || "Logout failed",
+        title: result?.message || "Logout failed",
       });
+      return;
     }
-  };
+    setUser(null);
+    Swal.fire({
+      icon: "success",
+      title: "Logout successful",
+      text: "You have been logged out successfully",
+      confirmButtonColor: "#D43333",
+    });
+  } catch (error: any) {
+    Toast({
+      icon: "error",
+      title: error?.message || "Logout failed",
+    });
+  }
+};
 
   return (
     <motion.section
@@ -318,7 +332,13 @@ const AuthButtons = ({ isLoggedIn, user, handleLogOut }: any) => {
                     <Phone className="h-3.5 w-3.5" />
                     Phone
                   </span>
-                  <span className="font-medium">{user?.phone}</span>
+                  {user?.phone ? (
+                    <span className="font-medium">{user?.phone}</span>
+                  ) : (
+                    <span className="font-medium text-muted-foreground">
+                      Not Provided
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex items-center justify-between">

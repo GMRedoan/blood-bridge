@@ -7,12 +7,11 @@ export interface IGetUserProfile {
   phone: string;
   city: string;
   area: string;
-  profilePhoto: string | null;
-  role: string;
+  role: "PATIENT" | "DONOR" | "HOSPITAL" | "ADMIN";
+  profilePhoto?: string;
+  isEmailVerified: boolean;
   isDeleted: boolean;
-  isEmailVerified?: boolean;
-  authProvider?: string;
-  donorProfile?: IDonorProfile | null;
+  donorProfile?: IDonorProfile;
   createdAt: string;
   updatedAt: string;
 }

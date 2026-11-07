@@ -107,11 +107,11 @@ export default function DashboardNavbar() {
                     <p className="truncate text-sm font-semibold">
                       {user?.name}
                     </p>
-                    {user?.status === "ACTIVE" && (
+                    {user?.isDeleted === false && (
                       <div className="bg-primary text-primary-foreground rounded-full">
                         <BadgeCheck className="h-3 w-3" />
-                      </div>
-                    )}
+                       </div>
+                     )}  
                   </div>
 
                   <p className="truncate text-xs text-muted-foreground">
@@ -130,7 +130,13 @@ export default function DashboardNavbar() {
                   <Phone className="h-3.5 w-3.5" />
                   Phone
                 </span>
-                <span className="font-medium">{user?.phone}</span>
+                {user?.phone ? (
+                  <span className="font-medium">{user?.phone}</span>
+                ) : (
+                  <span className="font-medium text-muted-foreground">
+                    Not Provided
+                  </span>
+                )}
               </div>
 
               <div className="flex items-center justify-between">
