@@ -19,6 +19,7 @@ import { MdOutlineSick } from "react-icons/md";
 import Animate from "@/components/Reusable/Animate";
 import { useState } from "react";
 import SocialLogin from "@/components/Reusable/SocialLogin";
+import ForgotPasswordDialog from "./ForgotPasswordDialog";
 
 type LoginData = z.infer<typeof loginSchema>;
 
@@ -147,6 +148,10 @@ export function LoginForm() {
           )}
         </div>
 
+        <div className="flex justify-end">
+          <ForgotPasswordDialog />
+        </div>
+
         <Button
           type="submit"
           className="w-full h-12 text-white font-semibold cursor-pointer"
@@ -163,7 +168,7 @@ export function LoginForm() {
         </Button>
       </form>
 
-      <SocialLogin/>
+      <SocialLogin />
 
       {/* Demo login */}
       <div className="relative my-6">

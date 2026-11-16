@@ -1,8 +1,8 @@
 "use server";
 
-import { CreateUserResponse, ICreateUser, IGoogleLoginPayload, ILoginPayload, IVerifyEmailPayload, Response } from "@/types/auth/auth";
+import { CreateUserResponse, ICreateUser, IGoogleLoginPayload, ILoginPayload, IResetPasswordPayload, IVerifyEmailPayload, Response } from "@/types/auth/auth";
 import { cookies } from "next/headers";
-import { createUserSchema, loginSchema } from "@/validation/auth.schema";
+import { createUserSchema, loginSchema, resetPasswordSchema } from "@/validation/auth.schema";
 import serverFetch from "@/lib/serverFetch";
 
 // register
@@ -188,6 +188,68 @@ export const googleLogin = async (payload: IGoogleLoginPayload) => {
     return {
       success: false,
       message: "Google login failed. Please try again.",
+    };
+  }
+};
+
+// Forgot password
+export const forgotPassword = async (email: string) => {
+  try {
+    const result = await serverFetch.post<Response>("/auth/forgot-password", {
+      email,
+    });
+
+    if (!result.success) {
+      return {
+        success: false,
+        message: result.message,
+      };
+    }
+
+    return {
+      success: true,
+      message: result.message,
+    };
+  } catch (error) {
+    console.error("FORGOT PASSWORD ERROR:", error);
+    return {
+      success: false,
+      message: "Forgot password request failed. Please try again.",
+    };
+  }
+};
+
+// Reset password
+export const resetPassword = async (payload: IResetPasswordPayload) => {
+  try {
+    const validatedPayload = await resetPasswordSchema.safeParseAsync(payload);
+    if (!validatedPayload.success) {
+      return {
+        success: false,
+        message: validatedPayload.error.message,
+      };
+    }
+
+    const result = await serverFetch.post<Response>(
+      "/auth/reset-password",
+      validatedPayload.data,
+    );
+    if (!result.success) {
+      return {
+        success: false,
+        message: result.message,
+      };
+    }
+
+    return {
+      success: true,
+      message: result.message,
+    };
+  } catch (error) {
+    console.error("RESET PASSWORD ERROR:", error);
+    return {
+      success: false,
+      message: "Reset password request failed. Please try again.",
     };
   }
 };
