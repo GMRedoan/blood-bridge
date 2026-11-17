@@ -1,9 +1,10 @@
+import Loading from '@/app/loading';
 import React from 'react';
 
 const About = () => {
     return (
         <div>
-           this is about page 
+         <Loading/> 
         </div>
     );
 };

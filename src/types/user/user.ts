@@ -10,6 +10,7 @@ export interface IGetUserProfile {
   role: "PATIENT" | "DONOR" | "HOSPITAL" | "ADMIN";
   profilePhoto?: string;
   isEmailVerified: boolean;
+  status: "ACTIVE" | "BANNED";
   isDeleted: boolean;
   donorProfile?: IDonorProfile;
   createdAt: string;

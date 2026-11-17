@@ -45,7 +45,7 @@ export function Banner() {
       <style>{`
         @keyframes ecg { to { stroke-dashoffset: 0; } }
         @keyframes breathe { 0%,100% { opacity:.55; transform:scale(1);} 50% { opacity:.9; transform:scale(1.06);} }
-        .ecg-line { stroke-dasharray: 700; stroke-dashoffset: 700; animation: ecg 2.6s cubic-bezier(.6,0,.2,1) .4s forwards; }
+        .ecg-line { stroke-dasharray: 700; stroke-dashoffset: 700; animation: ecg 2.6s cubic-bezier(.6,0,.2,1) .4s infinite; }
         .drop-glow { animation: breathe 4.8s ease-in-out infinite; }
         @media (prefers-reduced-motion: reduce) {
           .ecg-line { animation: none; stroke-dashoffset: 0; }

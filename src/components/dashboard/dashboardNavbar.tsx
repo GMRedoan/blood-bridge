@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import Swal from "sweetalert2";
@@ -16,19 +17,36 @@ import { useAuth } from "@/providers/AuthProvider";
 import { logout } from "@/server/auth/auth.service";
 import { Toast } from "../Reusable/Toast";
 import { ThemeToggle } from "../Shared/theme/ThemeToggle";
+import { useState } from "react";
 
 export default function DashboardNavbar() {
   const { user, setUser } = useAuth();
   const router = useRouter();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleLogOut = async () => {
+    setDropdownOpen(false);
+    const confirmation = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to log out of your account?",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#D43333",
+      cancelButtonColor: "#6B7280",
+      confirmButtonText: "Yes, Logout",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    });
+
+    if (!confirmation.isConfirmed) return;
+
     try {
       const result = await logout();
 
       if (!result.success) {
         Toast({
           icon: "error",
-          title: result?.message || "Login failed",
+          title: result?.message || "Logout failed",
         });
         return;
       }
@@ -67,7 +85,7 @@ export default function DashboardNavbar() {
       <div className="flex items-center gap-6">
         <ThemeToggle />
 
-        <DropdownMenu>
+        <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
           <DropdownMenuTrigger asChild>
             <button className="rounded-full cursor-pointer border border-primary/60 hover:border-primary">
               <Avatar>
@@ -107,11 +125,11 @@ export default function DashboardNavbar() {
                     <p className="truncate text-sm font-semibold">
                       {user?.name}
                     </p>
-                    {user?.isDeleted === false && (
+                    {user?.status === "ACTIVE" && (
                       <div className="bg-primary text-primary-foreground rounded-full">
                         <BadgeCheck className="h-3 w-3" />
-                       </div>
-                     )}  
+                      </div>
+                    )}
                   </div>
 
                   <p className="truncate text-xs text-muted-foreground">
@@ -134,7 +152,7 @@ export default function DashboardNavbar() {
                   <span className="font-medium">{user?.phone}</span>
                 ) : (
                   <span className="font-medium text-muted-foreground">
-                    Not Provided
+                    Not provided
                   </span>
                 )}
               </div>
@@ -150,13 +168,13 @@ export default function DashboardNavbar() {
 
             {/* Actions */}
             <div className="mt-4 border-t pt-3">
-              <button
-                onClick={handleLogOut}
-                className="flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium cursor-pointer text-red-500 transition-all hover:bg-red-500/10"
+              <DropdownMenuItem
+                onSelect={handleLogOut}
+                className="flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium cursor-pointer text-red-500 focus:bg-red-500/10 focus:text-red-500"
               >
                 <LogOut className="h-4 w-4" />
                 Logout
-              </button>
+              </DropdownMenuItem>
             </div>
           </DropdownMenuContent>
         </DropdownMenu>

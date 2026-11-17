@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import {
@@ -35,6 +35,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -76,6 +77,8 @@ const defaultMenu: MenuItem[] = [
 const Navbar = ({ menu = defaultMenu }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false);
   const { user, setUser, isLoggedIn } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const router = useRouter();
   // Scroll effect
   useEffect(() => {
     const handleScroll = () => {
@@ -89,6 +92,7 @@ const Navbar = ({ menu = defaultMenu }: NavbarProps) => {
 
   // logout
 const handleLogOut = async () => {
+  setDropdownOpen(false);
   const confirmation = await Swal.fire({
     title: "Are you sure?",
     text: "Do you really want to log out of your account?",
@@ -114,6 +118,7 @@ const handleLogOut = async () => {
       return;
     }
     setUser(null);
+    router.push("/");
     Swal.fire({
       icon: "success",
       title: "Logout successful",
@@ -220,7 +225,7 @@ const DesktopMenu = ({ menu, user, isLoggedIn, handleLogOut }: any) => {
 };
 
 // ====================== Auth ======================
-const AuthButtons = ({ isLoggedIn, user, handleLogOut }: any) => {
+const AuthButtons = ({ isLoggedIn, user, handleLogOut, dropdownOpen, setDropdownOpen }: any) => {
   const { 
     openLogin,
     openVerifyEmail,
@@ -270,7 +275,7 @@ const AuthButtons = ({ isLoggedIn, user, handleLogOut }: any) => {
             </span>
           </button>
         ) : (
-          <DropdownMenu>
+          <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <button className="rounded-full cursor-pointer border border-primary/60 hover:border-primary">
                 <Avatar>
@@ -336,7 +341,7 @@ const AuthButtons = ({ isLoggedIn, user, handleLogOut }: any) => {
                     <span className="font-medium">{user?.phone}</span>
                   ) : (
                     <span className="font-medium text-muted-foreground">
-                      Not Provided
+                      Not provided
                     </span>
                   )}
                 </div>
@@ -352,13 +357,13 @@ const AuthButtons = ({ isLoggedIn, user, handleLogOut }: any) => {
 
               {/* Actions */}
               <div className="mt-4 border-t pt-3">
-                <button
-                  onClick={handleLogOut}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium cursor-pointer text-red-500 transition-all hover:bg-red-500/10"
+                <DropdownMenuItem
+                  onSelect={handleLogOut}
+                  className="flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium cursor-pointer text-red-500 focus:bg-red-500/10 focus:text-red-500"
                 >
                   <LogOut className="h-4 w-4" />
                   Logout
-                </button>
+                </DropdownMenuItem>
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
