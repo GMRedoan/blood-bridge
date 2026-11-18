@@ -36,6 +36,7 @@ export default function DashboardSidebar() {
   const collapsed = state === "collapsed";
   const { user, setUser } = useAuth();
   const items = sidebarItems[user?.role as keyof typeof sidebarItems] ?? [];
+  
   const handleLogOut = async () => {
     try {
       const result = await logout();

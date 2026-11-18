@@ -18,7 +18,7 @@ export default function HomeLayout({
       <nav>
         <Navbar />
       </nav>
-      <main className="max-w-7xl mx-auto px-5">
+      <main>
         {children}
       </main>
       <Footer />

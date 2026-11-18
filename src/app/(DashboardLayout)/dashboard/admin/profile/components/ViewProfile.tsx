@@ -31,16 +31,7 @@ import SetBloodGroupDialog from "./setBloodGroupDialog";
 import { useRouter } from "next/navigation";
 import { createDonorProfile } from "@/server/donor/donor.service";
 import { Toast } from "@/components/Reusable/Toast";
-
-const formatDate = (date: Date | string | null) => {
-  if (!date) return "N/A";
-
-  return new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
+import { formatDate } from "@/components/Reusable/FormatDate";
 
 interface viewProfileProps {
   profile: IGetUserProfile;

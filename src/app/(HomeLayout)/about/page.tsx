@@ -1,10 +1,8 @@
-import Loading from '@/app/loading';
-import React from 'react';
-
+  
 const About = () => {
     return (
         <div>
-         <Loading/> 
+this is about page
         </div>
     );
 };

@@ -8,7 +8,7 @@ export type BloodGroup =
   | "O_POS"
   | "O_NEG";
 
-  const bloodGroupLabels: Record<BloodGroup, string> = {
+ export const bloodGroupLabels: Record<BloodGroup, string> = {
     A_POS: "A+",
     A_NEG: "A-",
     B_POS: "B+",
@@ -17,7 +17,11 @@ export type BloodGroup =
     AB_NEG: "AB-",
     O_POS: "O+",
     O_NEG: "O-",
-  };
+};
+
+export const getBloodGroupLabel = (value: unknown): string =>
+  Object.entries(bloodGroupLabels).find(([group]) => group === value)?.[1] ??
+  String(value ?? "Unknown");
 
 export const formatBloodGroup = (bloodGroup?: BloodGroup | null): string => {
     if (!bloodGroup) return "N/A";

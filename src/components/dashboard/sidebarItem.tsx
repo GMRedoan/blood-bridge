@@ -70,8 +70,8 @@ export const sidebarItems = {
       icon: Home,
     },
     {
-      title: "My Requests",
-      href: "/dashboard/patient/myRequests",
+      title: "My Blood Requests",
+      href: "/dashboard/patient/myBloodRequests",
       icon: ClipboardList,
     },
     {
