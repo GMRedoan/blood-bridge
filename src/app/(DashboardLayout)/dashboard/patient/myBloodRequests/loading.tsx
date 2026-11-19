@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-const Loading = () => {
+const RequestLoading = () => {
   return (
     <div className="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
       <div className="space-y-3 rounded-2xl border p-6 sm:p-8">
@@ -64,4 +64,4 @@ const Loading = () => {
   );
 };
 
-export default Loading;
+export default RequestLoading;

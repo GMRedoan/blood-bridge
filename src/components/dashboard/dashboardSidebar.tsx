@@ -2,7 +2,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
 import {
   Tooltip,
   TooltipContent,
@@ -28,6 +27,7 @@ import { sidebarItems } from "./sidebarItem";
 import { logout } from "@/server/auth/auth.service";
 import { Toast } from "../Reusable/Toast";
 import Logo from "../Reusable/Logo";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function DashboardSidebar() {
   const pathname = usePathname();

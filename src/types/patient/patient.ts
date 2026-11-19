@@ -1,3 +1,5 @@
+import { BloodGroup } from "../donor/donor";
+
 export interface requestMatches {
     id : string;
     requestId: string;
@@ -33,4 +35,16 @@ export interface myBloodRequestsResponse {
     success: boolean;
     message: string;
     data: myBloodRequests[];
+}
+
+export interface ICreateRequestPayload {
+  requesterType: "INDIVIDUAL" | "HOSPITAL";
+  patientName: string;
+  bloodGroup: BloodGroup;
+  unitsNeeded: number;
+  hospitalName?: string;
+  reason: string;
+  city: string;
+  area: string;
+  urgency: string;
 }

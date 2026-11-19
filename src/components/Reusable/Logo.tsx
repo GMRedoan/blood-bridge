@@ -3,12 +3,7 @@ import Image from "next/image";
 const Logo = () => {
   return (
     <div>
-      <Image
-        src="https://i.ibb.co.com/KczDkL5Q/favicon.png"
-        alt="Logo"
-        width={50}
-        height={20}
-      />
+      <Image src="/logo.jpg" alt="Logo" width={40} height={30} priority />{" "}
     </div>
   );
 };
