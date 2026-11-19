@@ -1,11 +1,17 @@
-/* eslint-disable react-hooks/incompatible-library */
 "use client";
 
 import Animate from "@/components/Reusable/Animate";
 import { Toast } from "@/components/Reusable/Toast";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -22,7 +28,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaEnvelope, FaLock, FaPhone, FaUser } from "react-icons/fa";
 import { MdAddLocation } from "react-icons/md";
-import z from "zod";
+import { z } from "zod";
+import DistrictCombobox from "../DistrictCombobox";
 
 type FormData = z.infer<typeof createUserSchema>;
 
@@ -35,42 +42,57 @@ export function RegisterForm() {
     setPendingVerificationEmail,
   } = useAuth();
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({
+  const form = useForm<FormData>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
+      name: "",
+      email: "",
+      phone: "",
+      city: "",
+      password: "",
       role: "PATIENT",
     },
   });
 
-  const role = watch("role");
+  const {
+    handleSubmit,
+    control,
+    formState: { isSubmitting },
+  } = form;
 
   const onSubmit = async (payload: FormData) => {
-    const result = await registerUser({
-      ...payload,
-      phone: payload.phone ?? "",
-      city: payload.city ?? "",
-      password: payload.password ?? "",
-      role: payload.role ?? "PATIENT",
-    });
-    if(result.success) {
-          Toast({
-            icon: "info",
-            title: result.message,
-          });
-          await refreshUser();
-          setVerificationEmail(payload.email);
-          setPendingVerificationEmail(payload.email);
-          setAuthStep("verify-email");
-    } else {
+    try {
+      const result = await registerUser({
+        ...payload,
+        phone: payload.phone ?? "",
+        city: payload.city ?? "",
+        password: payload.password ?? "",
+        role: payload.role ?? "PATIENT",
+      });
+
+      if (result.success) {
+        Toast({
+          icon: "info",
+          title: result.message,
+        });
+
+        await refreshUser();
+
+        setVerificationEmail(payload.email);
+        setPendingVerificationEmail(payload.email);
+        setAuthStep("verify-email");
+      } else {
+        Toast({
+          icon: "error",
+          title: result.message,
+        });
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+
       Toast({
         icon: "error",
-        title: result.message,
+        title: "Something went wrong. Please try again.",
       });
     }
   };
@@ -86,156 +108,190 @@ export function RegisterForm() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
-        {/* Name */}
-        <div className="space-y-2">
-          <Label>Name</Label>
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Name */}
+          <FormField
+            control={control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
 
-          <div className="relative">
-            <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <FormControl>
+                  <div className="relative">
+                    <FaUser className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
 
-            <Input
-              {...register("name")}
-              className="pl-11 h-10"
-              placeholder="John Doe"
-            />
-          </div>
+                    <Input
+                      {...field}
+                      className="h-10 pl-11"
+                      placeholder="John Doe"
+                    />
+                  </div>
+                </FormControl>
 
-          {errors.name && (
-            <p className="text-sm text-destructive">{errors.name.message}</p>
-          )}
-        </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Email */}
-        <div className="space-y-2">
-          <Label>Email</Label>
+          {/* Email */}
+          <FormField
+            control={control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
 
-          <div className="relative">
-            <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <FormControl>
+                  <div className="relative">
+                    <FaEnvelope className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
 
-            <Input
-              {...register("email")}
-              className="pl-11 h-10"
-              placeholder="john@email.com"
-            />
-          </div>
+                    <Input
+                      {...field}
+                      type="email"
+                      className="h-10 pl-11"
+                      placeholder="john@email.com"
+                    />
+                  </div>
+                </FormControl>
 
-          {errors.email && (
-            <p className="text-sm text-destructive">{errors.email.message}</p>
-          )}
-        </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Phone */}
-        <div className="space-y-2">
-          <Label>Phone</Label>
+          {/* Phone */}
+          <FormField
+            control={control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone</FormLabel>
 
-          <div className="relative">
-            <FaPhone className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <FormControl>
+                  <div className="relative">
+                    <FaPhone className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
 
-            <Input
-              type="number"
-              {...register("phone")}
-              className="pl-11 h-10"
-              placeholder="+8801XXXXXXXXX"
-            />
-          </div>
+                    <Input
+                      {...field}
+                      type="tel"
+                      className="h-10 pl-11"
+                      placeholder="+8801XXXXXXXXX"
+                    />
+                  </div>
+                </FormControl>
 
-          {errors.phone && (
-            <p className="text-sm text-destructive">{errors.phone.message}</p>
-          )}
-        </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* City */}
-        <div className="space-y-2">
-          <Label>City</Label>
+          {/* City / District */}
+          <FormField
+            control={control}
+            name="city"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>City</FormLabel>
 
-          <div className="relative">
-            <MdAddLocation className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground text-xl" />
+                <FormControl>
+                  <DistrictCombobox
+                    value={field.value ?? ""}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
 
-            <Input
-              {...register("city")}
-              className="pl-11 h-10"
-              placeholder="Enter your city"
-            />
-          </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          {errors.city && (
-            <p className="text-sm text-destructive">{errors.city.message}</p>
-          )}
-        </div>
+          {/* Password */}
+          <FormField
+            control={control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
 
-        {/* Password */}
-        <div className="space-y-2">
-          <Label>Password</Label>
+                <FormControl>
+                  <div className="relative">
+                    <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
 
-          <div className="relative">
-            <FaLock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      {...field}
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Enter your password"
+                      className="h-10 pl-11 pr-11"
+                    />
 
-            <Input
-              type={showPassword ? "text" : "password"}
-              {...register("password")}
-              placeholder="Enter your password"
-              className="pl-11 pr-11 h-10"
-            />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-muted-foreground transition-colors hover:text-foreground"
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
+                </FormControl>
 
-            <button
-              type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              aria-label={showPassword ? "Hide password" : "Show password"}
-            >
-              {showPassword ? (
-                <EyeOff className="h-5 w-5" />
-              ) : (
-                <Eye className="h-5 w-5" />
-              )}
-            </button>
-          </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-          {errors.password && (
-            <p className="text-sm text-destructive">
-              {errors.password.message}
-            </p>
-          )}
-        </div>
+          {/* Role */}
+          <FormField
+            control={control}
+            name="role"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-primary/70">Register As</FormLabel>
 
-        {/* Role */}
-        <div className="space-y-2">
-          <Label className="text-primary/70">Register As</Label>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger className="h-12">
+                      <SelectValue placeholder="Select your role" />
+                    </SelectTrigger>
+                  </FormControl>
 
-          <Select
-            value={role}
-            onValueChange={(value) =>
-              setValue("role", value as "PATIENT" | "DONOR" | "HOSPITAL")
-            }
+                  <SelectContent>
+                    <SelectItem value="PATIENT">Patient</SelectItem>
+                    <SelectItem value="DONOR">Donor</SelectItem>
+                    <SelectItem value="HOSPITAL">Hospital</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Submit */}
+          <Button
+            type="submit"
+            className="mt-4 h-10 w-full cursor-pointer text-md text-white"
+            disabled={isSubmitting}
           >
-            <SelectTrigger className="h-12">
-              <SelectValue />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="PATIENT">Patient</SelectItem>
-              <SelectItem value="DONOR">Donor</SelectItem>
-              <SelectItem value="HOSPITAL">Hospital</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <Button
-          type="submit"
-          className="h-10 mt-4 w-full text-white text-md cursor-pointer"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <>
-              Creating Account...{" "}
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            </>
-          ) : (
-            "Create Account"
-          )}
-        </Button>
-      </form>
+            {isSubmitting ? (
+              <>
+                Creating Account...
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              </>
+            ) : (
+              "Create Account"
+            )}
+          </Button>
+        </form>
+      </Form>
 
       {/* Login */}
       <div className="text-center text-sm">
@@ -244,7 +300,7 @@ export function RegisterForm() {
         <button
           type="button"
           onClick={() => setAuthStep("login")}
-          className="ml-1 font-semibold text-primary hover:underline cursor-pointer"
+          className="ml-1 cursor-pointer font-semibold text-primary hover:underline"
         >
           Login
         </button>
