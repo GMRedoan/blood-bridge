@@ -8,8 +8,11 @@ import {
   Clock3,
   Droplets,
   Hospital,
+  Loader2,
   MapPin,
   MessageCircle,
+  Pencil,
+  Trash2,
   Users,
   XCircle,
 } from "lucide-react";
@@ -19,6 +22,11 @@ import Animate from "@/components/Reusable/Animate";
 import { getLabel, MatchDialog } from "./matchDialog";
 import { formatDate } from "@/components/Reusable/FormatDate";
 import { Button } from "@/components/ui/button";
+import { deleteRequest } from "@/server/patient/patient.service";
+import { Toast } from "@/components/Reusable/Toast";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
+import EditRequestDialog from "./EditRequestDialog";
 
 interface MyBloodRequestsProps {
   requests: myBloodRequests[];
@@ -33,6 +41,8 @@ const statusStyles: Record<string, string> = {
 };
 
 export default function MyRequests({ requests }: MyBloodRequestsProps) {
+  const router = useRouter();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [selectedRequest, setSelectedRequest] =
     useState<myBloodRequests | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -40,6 +50,60 @@ export default function MyRequests({ requests }: MyBloodRequestsProps) {
     setSelectedRequest(request);
     setDialogOpen(true);
   };
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+const handleDelete = async (requestId: string) => {
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "This blood request will be permanently deleted!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#dc2626",
+    cancelButtonColor: "#64748b",
+    confirmButtonText: "Yes, delete it!",
+    cancelButtonText: "Cancel",
+    reverseButtons: true,
+    focusCancel: true,
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+    setDeletingId(requestId);
+    const response = await deleteRequest(requestId);
+
+    if (!response.success) {
+      Toast({
+        icon: "error",
+        title: response.message ?? "Something went wrong. Please try again.",
+      });
+      return;
+    }
+
+    await Swal.fire({
+      title: "Deleted!",
+      text: "Your blood request has been deleted successfully.",
+      icon: "success",
+      timer: 2000,
+      confirmButtonColor: "#16a34a",
+      showConfirmButton: false,
+    });
+
+    router.refresh();
+    setDeletingId(null);
+  } catch (error) {
+    console.error("Delete request error:", error);
+    Toast({
+      icon: "error",
+      title: "Something went wrong. Please try again.",
+    })
+  ;}
+};
+
+const handleEdit = (request: myBloodRequests) => {
+  setSelectedRequest(request);
+  setIsEditOpen(true);
+};
 
   return (
     <div className="min-h-screen bg-background">
@@ -115,42 +179,100 @@ export default function MyRequests({ requests }: MyBloodRequestsProps) {
                 <Animate key={request.id} type="fadeUp" delay={index * 0.07}>
                   <article className="group h-full overflow-hidden rounded-2xl border bg-card shadow-sm transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
                     {/* Card top */}
-                    <div className="flex items-start justify-between gap-3 border-b p-5 sm:p-6">
-                      <div className="flex items-center gap-3">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between p-6 border-b">
+                      {/* Left: Patient information */}
+                      <div className="flex min-w-0 items-center gap-3">
+                        {/* Blood group */}
                         <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-xl font-extrabold text-primary ring-1 ring-primary/10">
                           {getBloodGroupLabel(request.bloodGroup)}
                         </div>
 
-                        <div className="min-w-0">
-                          <h3 className="truncate text-lg font-bold">
+                        {/* Patient details */}
+                        <div className="min-w-0 flex-1 space-y-1.5">
+                          <h3 className="truncate text-base font-bold sm:text-lg">
                             {request.patientName}
                           </h3>
 
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            Request ID: {request.id.slice(0, 8)}
-                          </p>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span
+                              className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${
+                                statusStyles[request.status] ??
+                                "border-border bg-muted text-muted-foreground"
+                              }`}
+                            >
+                              {getLabel(request.status)}
+                            </span>
+
+                            <span
+                              className={`inline-flex items-center gap-1 text-xs font-semibold ${
+                                request.urgency?.toLowerCase() === "urgent" ||
+                                request.urgency?.toLowerCase() === "emergency"
+                                  ? "text-red-600"
+                                  : "text-muted-foreground"
+                              }`}
+                            >
+                              <span
+                                className={`h-1.5 w-1.5 rounded-full ${
+                                  request.urgency?.toLowerCase() === "urgent" ||
+                                  request.urgency?.toLowerCase() === "emergency"
+                                    ? "bg-red-500"
+                                    : "bg-muted-foreground"
+                                }`}
+                              />
+                              {getLabel(request.urgency)} urgency
+                            </span>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="flex flex-col items-end gap-2">
-                        <span
-                          className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${
-                            statusStyles[request.status] ??
-                            "bg-muted text-muted-foreground border-border"
-                          }`}
-                        >
-                          {getLabel(request.status)}
-                        </span>
-
-                        <span
-                          className={`text-xs font-semibold ${
-                            request.urgency?.toLowerCase() === "urgent"
-                              ? "text-red-600"
-                              : "text-muted-foreground"
-                          }`}
-                        >
-                          {getLabel(request.urgency)} urgency
-                        </span>
+                      {/* Right: Actions */}
+                      <div>
+                        <div className="flex shrink-0 items-center gap-2 sm:justify-end">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1 gap-2 sm:flex-none"
+                            onClick={() => handleEdit(request)}
+                            disabled={request.matches?.some(
+                              (match) => match.status === "ACCEPTED",
+                            )}
+                          >
+                            <Pencil className="h-4 w-4" />
+                            Edit
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            className="flex-1 gap-2 sm:flex-none"
+                            disabled={
+                              deletingId !== null ||
+                              request.matches?.some(
+                                (match) => match.status === "ACCEPTED",
+                              )
+                            }
+                            onClick={() => handleDelete(request.id)}
+                          >
+                            {deletingId === request.id ? (
+                              <>
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                Deleting...
+                              </>
+                            ) : (
+                              <>
+                                <Trash2 className="h-4 w-4" />
+                                Delete
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                        {
+                          request.matches?.some(
+                              (match) => match.status === "ACCEPTED") && (
+                                <span className="text-xs text-amber-300 ml-4">
+                                  Donor already accepted
+                                </span>
+                              )
+                        }
                       </div>
                     </div>
 
@@ -275,6 +397,14 @@ export default function MyRequests({ requests }: MyBloodRequestsProps) {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
       />
+      {selectedRequest && (
+        <EditRequestDialog
+          key={selectedRequest.id}
+          request={selectedRequest}
+          open={isEditOpen}
+          onOpenChange={setIsEditOpen}
+        />
+      )}
     </div>
   );
 }

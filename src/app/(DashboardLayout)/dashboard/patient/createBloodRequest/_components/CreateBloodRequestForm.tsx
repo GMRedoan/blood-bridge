@@ -38,6 +38,7 @@ import {
 import DistrictCombobox from "@/components/Shared/DistrictCombobox";
 import { Toast } from "@/components/Reusable/Toast";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/providers/AuthProvider";
 
 interface CreateBloodRequestFormProps {
   profileCity?: string | null;
@@ -48,6 +49,7 @@ const CreateBloodRequestForm = ({
   profileCity,
   profileArea,
 }: CreateBloodRequestFormProps) => {
+  const { user } = useAuth();
   const router = useRouter();
   const form = useForm<
     CreateBloodRequestInput,
@@ -56,7 +58,7 @@ const CreateBloodRequestForm = ({
   >({
     resolver: zodResolver(createRequestFormSchema),
     defaultValues: {
-      requesterType: "INDIVIDUAL",
+      requesterType: user?.role === "PATIENT" ? "INDIVIDUAL" : "HOSPITAL",
       patientName: "",
       bloodGroup: undefined,
       unitsNeeded: 1,
@@ -67,7 +69,6 @@ const CreateBloodRequestForm = ({
       urgency: "normal",
     },
   });
-
   const requesterType = useWatch({
     control: form.control,
     name: "requesterType",
@@ -84,7 +85,7 @@ const CreateBloodRequestForm = ({
         });
         return;
       }
-      router.push("/dashboard/patient/myBloodRequests");
+      router.push(`/dashboard/${user?.role.toLocaleLowerCase()}/myBloodRequests`);
       Toast({
         icon: "success",
         title: "Your blood request has been submitted successfully.",
@@ -148,7 +149,7 @@ const CreateBloodRequestForm = ({
               Fill in the details below to find compatible donors.
             </p>
           </div>
-
+ 
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {/* Requester type */}

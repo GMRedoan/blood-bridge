@@ -1,5 +1,5 @@
 import { Home, Building2, ClipboardList, Users, User, SquarePen } from "lucide-react";
-import { MdCategory, MdPayment, MdRateReview, MdReviews } from "react-icons/md";
+import { MdCategory, MdPayment, MdRateReview } from "react-icons/md";
 
 export const sidebarItems = {
   ADMIN: [
@@ -97,6 +97,11 @@ export const sidebarItems = {
       icon: Home,
     },
     {
+      title: "Create Blood Request",
+      href: "/dashboard/hospital/createBloodRequest",
+      icon: SquarePen,
+    },
+    {
       title: "My Blood Requests",
       href: "/dashboard/hospital/myBloodRequests",
       icon: ClipboardList,
@@ -105,11 +110,6 @@ export const sidebarItems = {
       title: "Payment History",
       href: "/dashboard/hospital/paymentHistory",
       icon: MdPayment,
-    },
-    {
-      title: "Review",
-      href: "/dashboard/hospital/review",
-      icon: MdReviews,
     },
     {
       title: "Profile",

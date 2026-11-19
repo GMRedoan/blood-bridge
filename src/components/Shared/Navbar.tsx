@@ -176,7 +176,7 @@ const handleLogOut = async () => {
 // ====================== Desktop Menu ======================
 const DesktopMenu = ({ menu, user, isLoggedIn, handleLogOut }: any) => {
   return (
-    <nav className="hidden h-20 items-center lg:flex">
+    <nav className="hidden h-18 items-center lg:flex">
       <div className="flex w-full items-center justify-between">
         {/* logo */}
          <Link href="/" className="group flex items-center gap-3">

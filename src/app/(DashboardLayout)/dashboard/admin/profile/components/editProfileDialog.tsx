@@ -66,7 +66,6 @@ export default function EditProfileDialog({
     area: profile.area || "",
     profilePhoto: profile.profilePhoto || "",
   });
-
   const [bloodGroup, setBloodGroup] = useState<BloodGroup | "">(
     profile.donorProfile?.bloodGroup || "",
   );
