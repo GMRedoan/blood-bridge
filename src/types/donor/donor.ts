@@ -52,3 +52,19 @@ export interface ICreateDonorResponse {
   message: string;
   data: IDonorProfile | null;
 }
+ 
+export interface ICreateDonation {
+  id: string;
+  requestId: string;
+  donorId: string;
+  status: string;
+  notifiedAt: string | null;
+  respondedAt: string | null;
+  createdAt: string;
+}
+
+export interface ICreateDonationResponse {
+  success: boolean;
+  message: string;
+  data: ICreateDonation;
+}

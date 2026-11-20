@@ -38,13 +38,27 @@ export default function DashboardSidebar() {
   const items = sidebarItems[user?.role as keyof typeof sidebarItems] ?? [];
   
   const handleLogOut = async () => {
+    const confirmation = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you really want to log out of your account?",
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonColor: "#D43333",
+      cancelButtonColor: "#6B7280",
+      confirmButtonText: "Yes, Logout",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    });
+
+    if (!confirmation.isConfirmed) return;
+
     try {
       const result = await logout();
 
       if (!result.success) {
         Toast({
           icon: "error",
-          title: result?.message || "Login failed",
+          title: result?.message || "Logout failed",
         });
         return;
       }

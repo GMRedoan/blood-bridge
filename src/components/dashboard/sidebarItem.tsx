@@ -1,4 +1,4 @@
-import { Home, Building2, ClipboardList, Users, User, SquarePen } from "lucide-react";
+import { Home, Building2, ClipboardList, Users, User, SquarePen, GitPullRequest } from "lucide-react";
 import { MdCategory, MdPayment, MdRateReview } from "react-icons/md";
 
 export const sidebarItems = {
@@ -42,9 +42,9 @@ export const sidebarItems = {
       icon: Home,
     },
     {
-      title: "My Properties",
-      href: "/dashboard/donor/myProperties",
-      icon: Building2,
+      title: "Matching Request",
+      href: "/dashboard/donor/matchingRequest",
+      icon: GitPullRequest,
     },
     {
       title: "Rental Requests",

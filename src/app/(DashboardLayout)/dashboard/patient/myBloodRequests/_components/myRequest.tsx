@@ -378,7 +378,7 @@ const handleEdit = (request: myBloodRequests) => {
                         className="w-full py-5"
                       >
                         <MessageCircle className="h-4 w-4" />
-                        View donor matches
+                        View donors for this request
                         <span className="ml-1 rounded-full bg-white/20 px-2 py-0.5 text-xs">
                           {request.matches?.length ?? 0}
                         </span>

@@ -29,7 +29,7 @@ export interface myBloodRequests {
   deletedAt: string | null;
   reason: string;
   matches?: requestMatches[];
-}
+} 
 
 export interface myBloodRequestsResponse {
   success: boolean;
