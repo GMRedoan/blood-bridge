@@ -52,7 +52,7 @@ export interface ICreateDonorResponse {
   message: string;
   data: IDonorProfile | null;
 }
- 
+
 export interface ICreateDonation {
   id: string;
   requestId: string;
@@ -61,6 +61,16 @@ export interface ICreateDonation {
   notifiedAt: string | null;
   respondedAt: string | null;
   createdAt: string;
+  request: {
+    patientName: string;
+    hospitalName: string;
+    reason: string;
+  };
+  donation?: {
+    status: string;
+    scheduledAt: string;
+    completedAt: string | null;
+  };
 }
 
 export interface ICreateDonationResponse {

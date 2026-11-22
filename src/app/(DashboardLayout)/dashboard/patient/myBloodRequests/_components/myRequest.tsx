@@ -35,14 +35,13 @@ interface MyBloodRequestsProps {
 const statusStyles: Record<string, string> = {
   PENDING: "bg-amber-500/10 text-amber-600 border-amber-500/20",
   VERIFIED: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
-  FULFILLED: "bg-blue-500/10 text-blue-600 border-blue-500/20",
   COMPLETED: "bg-blue-500/10 text-blue-600 border-blue-500/20",
   EXPIRED: "bg-red-500/10 text-red-600 border-red-500/20",
 };
 
 export default function MyRequests({ requests }: MyBloodRequestsProps) {
   const router = useRouter();
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [selectedRequest, setSelectedRequest] =
     useState<myBloodRequests | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -51,59 +50,61 @@ export default function MyRequests({ requests }: MyBloodRequestsProps) {
     setDialogOpen(true);
   };
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const withTime = { hour: "2-digit", minute: "2-digit" } as const;
 
-const handleDelete = async (requestId: string) => {
-  const result = await Swal.fire({
-    title: "Are you sure?",
-    text: "This blood request will be permanently deleted!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#dc2626",
-    cancelButtonColor: "#64748b",
-    confirmButtonText: "Yes, delete it!",
-    cancelButtonText: "Cancel",
-    reverseButtons: true,
-    focusCancel: true,
-  });
-
-  if (!result.isConfirmed) return;
-
-  try {
-    setDeletingId(requestId);
-    const response = await deleteRequest(requestId);
-
-    if (!response.success) {
-      Toast({
-        icon: "error",
-        title: response.message ?? "Something went wrong. Please try again.",
-      });
-      return;
-    }
-
-    await Swal.fire({
-      title: "Deleted!",
-      text: "Your blood request has been deleted successfully.",
-      icon: "success",
-      timer: 2000,
-      confirmButtonColor: "#16a34a",
-      showConfirmButton: false,
+  const handleDelete = async (requestId: string) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This blood request will be permanently deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#64748b",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+      focusCancel: true,
     });
 
-    router.refresh();
-    setDeletingId(null);
-  } catch (error) {
-    console.error("Delete request error:", error);
-    Toast({
-      icon: "error",
-      title: "Something went wrong. Please try again.",
-    })
-  ;}
-};
+    if (!result.isConfirmed) return;
 
-const handleEdit = (request: myBloodRequests) => {
-  setSelectedRequest(request);
-  setIsEditOpen(true);
-};
+    try {
+      setDeleting(true);
+      const response = await deleteRequest(requestId);
+
+      if (!response.success) {
+        Toast({
+          icon: "error",
+          title: response.message ?? "Something went wrong. Please try again.",
+        });
+        return;
+      }
+
+      await Swal.fire({
+        title: "Deleted!",
+        text: "Your blood request has been deleted successfully.",
+        icon: "success",
+        timer: 2000,
+        confirmButtonColor: "#16a34a",
+        showConfirmButton: false,
+      });
+
+      router.refresh();
+    } catch (error) {
+      console.error("Delete request error:", error);
+      Toast({
+        icon: "error",
+        title: "Something went wrong. Please try again.",
+      });
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleEdit = (request: myBloodRequests) => {
+    setSelectedRequest(request);
+    setIsEditOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -234,25 +235,30 @@ const handleEdit = (request: myBloodRequests) => {
                             className="flex-1 gap-2 sm:flex-none"
                             onClick={() => handleEdit(request)}
                             disabled={request.matches?.some(
-                              (match) => match.status === "ACCEPTED",
+                              (match) =>
+                                match.status === "ACCEPTED" ||
+                                match.status === "COMPLETED",
                             )}
                           >
                             <Pencil className="h-4 w-4" />
                             Edit
                           </Button>
+
                           <Button
                             size="sm"
                             variant="secondary"
                             className="flex-1 gap-2 sm:flex-none"
                             disabled={
-                              deletingId !== null ||
+                              deleting ||
                               request.matches?.some(
-                                (match) => match.status === "ACCEPTED",
+                                (match) =>
+                                  match.status === "ACCEPTED" ||
+                                  match.status === "COMPLETED",
                               )
                             }
                             onClick={() => handleDelete(request.id)}
                           >
-                            {deletingId === request.id ? (
+                            {deleting ? (
                               <>
                                 <Loader2 className="h-4 w-4 animate-spin" />
                                 Deleting...
@@ -265,14 +271,20 @@ const handleEdit = (request: myBloodRequests) => {
                             )}
                           </Button>
                         </div>
-                        {
-                          request.matches?.some(
-                              (match) => match.status === "ACCEPTED") && (
-                                <span className="text-xs text-amber-300 ml-4">
-                                  Donor already accepted
-                                </span>
-                              )
-                        }
+                        {request.matches?.some(
+                          (match) => match.status === "ACCEPTED",
+                        ) && (
+                          <span className="text-xs text-amber-300 ml-4">
+                            The request has already accepted
+                          </span>
+                        )}
+                        {request.matches?.some(
+                          (match) => match.status === "COMPLETED",
+                        ) && (
+                          <span className="text-xs text-green-300 ml-4">
+                            The request has already completed.
+                          </span>
+                        )}
                       </div>
                     </div>
 
@@ -331,7 +343,7 @@ const handleEdit = (request: myBloodRequests) => {
                           <CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                           <div>
                             <p className="text-sm font-medium">
-                              {formatDate(request.createdAt)}
+                              {formatDate(request.createdAt, withTime)}
                             </p>
                             <p className="text-xs text-muted-foreground">
                               Request created

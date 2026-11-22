@@ -110,3 +110,28 @@ export const createDonation = async (requestId: string) => {
     };
   }
 };
+
+export const myDonations = async () => {
+  try {
+    const result = await serverFetch.get<ICreateDonationResponse>(
+      "/donor/create-donation/me",
+    );
+    if (!result.success) {
+      return {
+        success: false,
+        message: result.message,
+      };
+    }
+    return {
+      success: true,
+      message: result.message,
+      data: result.data,
+    };
+  } catch (error) {
+    console.error("MY DONATIONS ERROR:", error);
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Something went wrong",
+    };
+  }
+};

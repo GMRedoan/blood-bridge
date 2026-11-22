@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-const Loading = () => {
+const MatchingRequestLoading = () => {
   return (
     <main className="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
       {/* Hero Section */}
@@ -16,14 +16,6 @@ const Loading = () => {
           <div className="space-y-2">
             <Skeleton className="h-4 w-full max-w-lg" />
             <Skeleton className="h-4 w-4/5 max-w-md" />
-          </div>
-
-          <div className="flex items-center gap-3 pt-2">
-            <Skeleton className="h-11 w-11 rounded-xl" />
-            <div className="space-y-2">
-              <Skeleton className="h-7 w-12" />
-              <Skeleton className="h-3 w-40" />
-            </div>
           </div>
         </div>
       </section>
@@ -133,4 +125,4 @@ const Loading = () => {
   );
 };
 
-export default Loading;
+export default MatchingRequestLoading;

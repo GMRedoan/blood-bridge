@@ -1,8 +1,12 @@
 interface FormatDateOptions {
   locale?: string;
+  timeZone?: string;
   year?: "numeric" | "2-digit";
   month?: "numeric" | "2-digit" | "long" | "short" | "narrow";
   day?: "numeric" | "2-digit";
+  hour?: "numeric" | "2-digit";
+  minute?: "numeric" | "2-digit";
+  hour12?: boolean;
   fallback?: string;
 }
 
@@ -11,10 +15,14 @@ export const formatDate = (
   options: FormatDateOptions = {},
 ): string => {
   const {
-    locale = "en-US",
+    locale = "en-BD",
+    timeZone = "Asia/Dhaka",
     year = "numeric",
-    month = "long",
-    day = "numeric",
+    month = "short",
+    day = "2-digit", 
+    hour,
+    minute,
+    hour12 = true,
     fallback = "N/A",
   } = options;
 
@@ -26,9 +34,24 @@ export const formatDate = (
     return fallback;
   }
 
-  return new Intl.DateTimeFormat(locale, {
+  const datePart = new Intl.DateTimeFormat(locale, {
+    timeZone,
     year,
     month,
     day,
   }).format(parsedDate);
+
+  if (!hour && !minute) return datePart;
+
+  const timePart = new Intl.DateTimeFormat(locale, {
+    timeZone,
+    hour: hour ?? "2-digit",
+    minute: minute ?? "2-digit",
+    hour12,
+  })
+    .format(parsedDate)
+    .replace(/[\u202f\u00a0]/g, " ") 
+    .replace(/\b(am|pm)\b/i, (m) => m.toUpperCase()); 
+
+  return `${datePart}, ${timePart}`;
 };

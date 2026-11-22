@@ -47,8 +47,8 @@ export const sidebarItems = {
       icon: GitPullRequest,
     },
     {
-      title: "Rental Requests",
-      href: "/dashboard/donor/requests",
+      title: "My Donations",
+      href: "/dashboard/donor/myDonations",
       icon: ClipboardList,
     },
     {

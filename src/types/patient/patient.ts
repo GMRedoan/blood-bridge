@@ -2,12 +2,22 @@ import { BloodGroup } from "../donor/donor";
 
 export interface requestMatches {
   id: string;
-  requestId: string;
-  donorId: string;
   status: string;
   notifiedAt: string | null;
   respondedAt: string | null;
   createdAt: string;
+  donor: {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+  };
+  donation?: {
+    id: string;
+    status: string;
+    scheduledAt: string | null;
+    completedAt: string | null;
+  } | null;
 }
 
 export interface myBloodRequests {
@@ -65,4 +75,49 @@ export interface IEditRequestPayload {
   city?: string;
   area?: string;
   urgency?: string;
+}
+
+export interface IAcceptRequest {
+  match: {
+    id: string;
+    requestId: string;
+    donorId: string;
+    status: string;
+    notifiedAt: string | null;
+    respondedAt: string | null;
+    createdAt: string;
+  };
+  donation: {
+    id: string;
+    requestId: string;
+    donorId: string;
+    status: string;
+    scheduledAt: string;
+    completedAt: string | null;
+    createdAt: string;
+    deletedAt: string | null;
+  };
+}
+
+export interface IAcceptRequestResponse {
+  success: boolean;
+  message: string;
+  data: IAcceptRequest;
+}
+
+ export interface ICompleteDonation {
+    id: string;
+    requestId: string;
+    donorId: string;
+    status: string;
+    scheduledAt: string;
+    completedAt: string | null;
+    createdAt: string;
+    deletedAt: string | null;
+}
+
+export interface ICompleteDonationResponse {
+  success: boolean;
+  message: string;
+  data: ICompleteDonation;
 }

@@ -1,7 +1,7 @@
 "use server"
 
 import serverFetch from "@/lib/serverFetch";
-import { deleteRequestsResponse, ICreateRequestPayload, IEditRequestPayload, myBloodRequestsResponse } from "@/types/patient/patient";
+import { deleteRequestsResponse, IAcceptRequestResponse, ICompleteDonationResponse, ICreateRequestPayload, IEditRequestPayload, myBloodRequestsResponse } from "@/types/patient/patient";
 import { createRequestFormSchema } from "@/validation/request.schema";
 
 export const createBloodRequest = async (
@@ -109,3 +109,50 @@ export const deleteRequest = async (id: string) => {
         throw error;
     }   
 }
+
+export const acceptDonation = async (id: string, scheduledAt: Date) => {
+  try {
+    const res = await serverFetch.post<IAcceptRequestResponse>(
+      `/request/matches/${id}/accept`,
+      {scheduledAt},
+    );
+    if (!res.success) {
+      return {
+        success: false,
+        message: res.message,
+        data: null,
+      };
+    }
+
+    return {
+      success: true,
+      data: null,
+    };
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    throw error;
+  }
+};
+
+export const completeDonation = async (id: string) => {
+  try {
+    const res = await serverFetch.patch<ICompleteDonationResponse>(
+      `/request/donations/${id}/complete`,
+    );
+    if (!res.success) {
+      return {
+        success: false,
+        message: res.message,
+        data: null,
+      };
+    }
+
+    return {
+      success: true,
+      data: null,
+    };
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    throw error;
+  }
+    }

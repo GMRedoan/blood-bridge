@@ -85,7 +85,9 @@ const CreateBloodRequestForm = ({
         });
         return;
       }
-      router.push(`/dashboard/${user?.role.toLocaleLowerCase()}/myBloodRequests`);
+      router.push(
+        `/dashboard/${user?.role.toLocaleLowerCase()}/myBloodRequests`,
+      );
       Toast({
         icon: "success",
         title: "Your blood request has been submitted successfully.",
@@ -149,7 +151,7 @@ const CreateBloodRequestForm = ({
               Fill in the details below to find compatible donors.
             </p>
           </div>
- 
+
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {/* Requester type */}
