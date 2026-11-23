@@ -18,7 +18,7 @@ export const getAllUsers = async () => {
 
 export const deleteUser = async (id: string) => {
     try {
-        const res = await serverFetch.delete<IDeleteUserResponse>(`/admin/user/${id}/delete`);
+        const res = await serverFetch.patch<IDeleteUserResponse>(`/admin/user/${id}/delete`);
         return {
             success: true,
             data: res.data,

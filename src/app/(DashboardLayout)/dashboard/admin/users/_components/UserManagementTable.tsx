@@ -34,7 +34,7 @@ import Swal from "sweetalert2";
 
 interface UserManagementTableProps {
   users: IGetUserProfile[];
-  onDeleteUser: (userId: string) => Promise<void>;
+  onDeleteUser: (userId: string) => Promise<unknown>;
   onToggleUserStatus: (
     userId: string,
     status: "ACTIVE" | "BANNED",
@@ -49,6 +49,7 @@ const UserManagementTable = ({
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [pendingId, setPendingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const roleOrder: Record<string, number> = {
     ADMIN: 0,
     HOSPITAL: 1,
@@ -81,16 +82,40 @@ const UserManagementTable = ({
     resetKey: search,
   });
 
-  const handleDelete = async (userId: string) => {
-    try {
-      setPendingId(userId);
-      await onDeleteUser(userId);
-    } catch (error) {
-      console.error("Failed to delete user:", error);
-    } finally {
-      setPendingId(null);
-    }
-  };
+const handleDelete = async (userId: string, userName: string) => {
+  const result = await Swal.fire({
+    title: "Delete this user?",
+    html: `Are you sure you want to delete <strong>${userName}</strong>?`,
+    text: "This action will remove the user from the active user list.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, Delete User",
+    cancelButtonText: "Cancel",
+    reverseButtons: true,
+    confirmButtonColor: "#dc2626",
+    cancelButtonColor: "#64748b",
+  });
+  if (!result.isConfirmed) return;
+  try {
+    setDeletingId(userId);
+    await onDeleteUser(userId);
+    Toast({
+      icon: "success",
+      title: "User deleted successfully",
+    });
+
+    router.refresh();
+  } catch (error) {
+    console.error("Failed to delete user:", error);
+
+    Toast({
+      icon: "error",
+      title: "Failed to delete user",
+    });
+  } finally {
+    setDeletingId(null);
+  }
+};
 
   const handleStatusChange = async (user: IGetUserProfile) => {
     const isActive = user.status === "ACTIVE";
@@ -204,7 +229,9 @@ const UserManagementTable = ({
 
                 <TableBody>
                   {paginatedUsers.map((user) => {
-                    const isPending = pendingId === user.id;
+                    const isStatusPending = pendingId === user.id;
+                    const isDeleting = deletingId === user.id;
+                    const isAnyDeletePending = deletingId !== null;
 
                     return (
                       <TableRow key={user.id}>
@@ -307,15 +334,15 @@ const UserManagementTable = ({
                                     : "ghost"
                                 }
                                 type="button"
-                                disabled={isPending}
+                                disabled={isStatusPending || isAnyDeletePending}
                                 onClick={() => handleStatusChange(user)}
                                 className="text-xs py-0!"
                               >
-                                {isPending ? (
+                                {isStatusPending ? (
                                   <span className="flex items-center gap-1">
-                                    <Clock/>
+                                    <Clock />
                                     Wait...
-                                    </span>
+                                  </span>
                                 ) : user.status === "ACTIVE" ? (
                                   <>
                                     <Ban />
@@ -332,17 +359,26 @@ const UserManagementTable = ({
                                   </>
                                 )}
                               </Button>
-
                               <Button
                                 size="xs"
                                 type="button"
-                                title="Delete"
-                                disabled={isPending}
-                                onClick={() => handleDelete(user.id)}
-                                className="text-xs"
+                                disabled={isDeleting || isAnyDeletePending}
+                                onClick={() => handleDelete(user.id, user.name)}
+                                className="text-xs py-0!"
                               >
-                                <Trash2 />
-                                <span className="hidden xl:inline">Delete</span>
+                                {deletingId === user.id ? (
+                                  <span className="flex items-center gap-1">
+                                    <Clock />
+                                    Wait...
+                                  </span>
+                                ) : (
+                                  <>
+                                    <Trash2 className="h-4 w-4" />
+                                    <span className="hidden xl:inline">
+                                      Delete
+                                    </span>
+                                  </>
+                                )}
                               </Button>
                             </div>
                           ) : (

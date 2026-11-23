@@ -21,7 +21,6 @@ import {
   CalendarDays,
   MapPin,
   RotateCcw,
-  ShieldCheck,
   Trash2,
   Users,
 } from "lucide-react";
@@ -69,9 +68,7 @@ const handleRestore = async (userId: string) => {
     confirmButtonColor: "#16a34a",
     cancelButtonColor: "#64748b",
   });
-
   if (!result.isConfirmed) return;
-
   try {
     setPendingId(userId);
     await restoreUser(userId);
