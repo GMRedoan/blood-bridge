@@ -1,5 +1,5 @@
-import { Home, Building2, ClipboardList, UserRoundX, User, SquarePen, GitPullRequest, Users, BookOpenCheck, TicketCheck } from "lucide-react";
-import { MdCategory, MdPayment, MdRateReview } from "react-icons/md";
+import { Home, ClipboardList, UserRoundX, User, SquarePen, GitPullRequest, Users, BookOpenCheck, TicketCheck, List } from "lucide-react";
+import { MdPayment, MdRateReview } from "react-icons/md";
 
 export const sidebarItems = {
   ADMIN: [
@@ -19,12 +19,17 @@ export const sidebarItems = {
       icon: UserRoundX,
     },
     {
-      title: "Verify Requests",
+      title: "Manage Blood Requests",
       href: "/dashboard/admin/VerifyRequests",
       icon: BookOpenCheck,
     },
     {
-      title: "Verify Campaigns",
+      title: "My Campaigns",
+      href: "/dashboard/admin/MyCampaign",
+      icon: List,
+    },
+    {
+      title: "Manage Campaigns",
       href: "/dashboard/admin/VerifyCampaigns",
       icon: TicketCheck,
     },
@@ -105,6 +110,11 @@ export const sidebarItems = {
       title: "My Blood Requests",
       href: "/dashboard/hospital/myBloodRequests",
       icon: ClipboardList,
+    },
+    {
+      title: "My Campaigns",
+      href: "/dashboard/hospital/MyCampaign",
+      icon: List,
     },
     {
       title: "Payment History",

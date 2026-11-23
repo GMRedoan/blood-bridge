@@ -43,8 +43,8 @@ const PendingCampaignsList = ({ campaigns }: PendingCampaignsListProps) => {
     const keyword = search.trim().toLowerCase();
     return (
       campaign.title.toLowerCase().includes(keyword) ||
-      campaign.createdBy.name.toLowerCase().includes(keyword) ||
-      campaign.createdBy.email.toLowerCase().includes(keyword)
+      campaign?.createdBy?.name.toLowerCase().includes(keyword) ||
+      campaign?.createdBy?.email.toLowerCase().includes(keyword)
     );
   });
 
@@ -231,19 +231,19 @@ const handleVerify = async (id: string, action: CampaignAction) => {
                     <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                       <User className="h-4 w-4 shrink-0 text-muted-foreground" />
                       <span className="truncate">
-                        {campaign.createdBy.name}
+                        {campaign?.createdBy?.name}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Mail className="h-3.5 w-3.5 shrink-0" />
                       <span className="truncate">
-                        {campaign.createdBy.email}
+                        {campaign?.createdBy?.email}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Phone className="h-3.5 w-3.5 shrink-0" />
                       <span className="truncate">
-                        {campaign.createdBy.phone}
+                        {campaign?.createdBy?.phone}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">

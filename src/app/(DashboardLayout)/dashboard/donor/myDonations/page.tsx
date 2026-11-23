@@ -1,5 +1,6 @@
 import Animate from "@/components/Reusable/Animate";
 import { formatDate } from "@/components/Reusable/FormatDate";
+import { getStatusStyles } from "@/lib/statusStyles";
 import { myDonations } from "@/server/donor/donor.service";
 import { ICreateDonation } from "@/types/donor/donor";
 import {
@@ -9,19 +10,6 @@ import {
   Droplets,
   HeartHandshake,
 } from "lucide-react";
-
-const getStatusStyles = (status: string) => {
-  switch (status) {
-    case "PENDING":
-      return "bg-yellow-500/10 text-yellow-600 border-yellow-500/20";
-    case "ACCEPTED":
-      return "bg-blue-500/10 text-blue-600 border-blue-500/20";
-      case "COMPLETED":
-      return "bg-green-500/10 text-green-600 border-green-500/20";
-      case "DECLINED":
-        return "bg-red-500/10 text-red-600 border-red-500/20";
-  }
-};
 
 const Page = async () => {
   const response = await myDonations();

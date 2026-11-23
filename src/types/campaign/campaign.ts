@@ -1,3 +1,9 @@
+export interface ICreateCampaign{
+    title: string;
+    description: string;
+    targetAmount: number;
+}
+
 export interface ICampaign {
   id: string;
   requestId: string | null;
@@ -10,7 +16,7 @@ export interface ICampaign {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-  createdBy: {
+  createdBy?: {
     name: string;
     email: string;
     phone: string;

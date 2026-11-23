@@ -27,14 +27,7 @@ import {
   completeDonation,
 } from "@/server/patient/patient.service";
 import { Button } from "@/components/ui/button";
-
-const matchStatusStyles: Record<string, string> = {
-  PENDING: "bg-amber-500/10 text-amber-600",
-  ACCEPTED: "bg-blue-500/10 text-blue-600 border-blue-500/20",
-  COMPLETED: "bg-emerald-500/10 text-emerald-600",
-  DECLINED: "bg-red-500/10 text-red-600",
-  EXPIRED: "bg-red-500/10 text-red-600",
-};
+import { statusStyles } from "@/lib/statusStyles";
 
 export const getLabel = (value?: string | null) => {
   if (!value) return "Unknown";
@@ -182,7 +175,7 @@ export function MatchItem({
 
         <span
           className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${
-            matchStatusStyles[match.status]
+            statusStyles[match.status]
           }`}
         >
           {getLabel(match.status)}
