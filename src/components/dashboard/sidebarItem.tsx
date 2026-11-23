@@ -1,4 +1,4 @@
-import { Home, Building2, ClipboardList, UserRoundX, User, SquarePen, GitPullRequest, Users } from "lucide-react";
+import { Home, Building2, ClipboardList, UserRoundX, User, SquarePen, GitPullRequest, Users, BookOpenCheck } from "lucide-react";
 import { MdCategory, MdPayment, MdRateReview } from "react-icons/md";
 
 export const sidebarItems = {
@@ -19,9 +19,9 @@ export const sidebarItems = {
       icon: UserRoundX,
     },
     {
-      title: "Requests",
-      href: "/dashboard/admin/requests",
-      icon: ClipboardList,
+      title: "Verify Requests",
+      href: "/dashboard/admin/VerifyRequests",
+      icon: BookOpenCheck ,
     },
     {
       title: "Categories",

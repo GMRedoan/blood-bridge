@@ -41,12 +41,24 @@ const UserManagementTableSkeleton = ({
         <Table className="w-full table-fixed">
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[30%] px-3">User</TableHead>
-              <TableHead className="w-[17%] px-3">Role / Blood Group</TableHead>
-              <TableHead className="w-[15%] px-3">Location</TableHead>
-              <TableHead className="w-[14%] px-3">Joined</TableHead>
-              <TableHead className="w-[10%] px-3">Status</TableHead>
-              <TableHead className="w-[14%] px-3 text-right">Actions</TableHead>
+              <TableHead className="w-[30%] px-3">
+                <Skeleton className="h-4 w-16" />
+              </TableHead>
+              <TableHead className="w-[17%] px-3">
+                <Skeleton className="h-4 w-28" />
+              </TableHead>
+              <TableHead className="w-[15%] px-3">
+                <Skeleton className="h-4 w-20" />
+              </TableHead>
+              <TableHead className="w-[14%] px-3">
+                <Skeleton className="h-4 w-16" />
+              </TableHead>
+              <TableHead className="w-[10%] px-3">
+                <Skeleton className="h-4 w-14" />
+              </TableHead>
+              <TableHead className="w-[14%] px-3 text-right">
+                <Skeleton className="ml-auto h-4 w-16" />
+              </TableHead>
             </TableRow>
           </TableHeader>
 

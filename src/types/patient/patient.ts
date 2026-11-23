@@ -20,6 +20,12 @@ export interface requestMatches {
   } | null;
 }
 
+interface creator {
+  name: string;
+  email: string;
+  phone: string;
+}
+
 export interface myBloodRequests {
   id: string;
   creatorId: string;
@@ -32,13 +38,14 @@ export interface myBloodRequests {
   area: string;
   urgency: string;
   status: string;
-  verifiedById: string | null;
+  verifiedById: string | null; 
   verifiedAt: string | null;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
   reason: string;
   matches?: requestMatches[];
+  creator?: creator;
 } 
 
 export interface myBloodRequestsResponse {

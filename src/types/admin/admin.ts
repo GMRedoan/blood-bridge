@@ -15,7 +15,6 @@ export interface IDeleteUser {
   profilePhoto: string | null;
   createdAt: string;
   updatedAt: string;
-
 }
 
 export interface IDeleteUserResponse {
