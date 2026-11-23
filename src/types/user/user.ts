@@ -6,13 +6,13 @@ export interface IGetUserProfile {
   email: string;
   phone: string;
   city: string;
-  area: string;
+  area: string | null;
   role: "PATIENT" | "DONOR" | "HOSPITAL" | "ADMIN";
-  profilePhoto?: string;
+  profilePhoto?: string | null;
   isEmailVerified: boolean;
   status: "ACTIVE" | "BANNED";
   isDeleted: boolean;
-  donorProfile?: IDonorProfile;
+  donorProfile?: IDonorProfile | null;
   createdAt: string;
   updatedAt: string;
 }
