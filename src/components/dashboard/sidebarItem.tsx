@@ -1,4 +1,4 @@
-import { Home, ClipboardList, UserRoundX, User, SquarePen, GitPullRequest, Users, BookOpenCheck, TicketCheck, List } from "lucide-react";
+import { Home, ClipboardList, UserRoundX, User, SquarePen, GitPullRequest, Users, BookOpenCheck, TicketCheck, List, Clock } from "lucide-react";
 import { MdPayment, MdRateReview } from "react-icons/md";
 
 export const sidebarItems = {
@@ -34,6 +34,11 @@ export const sidebarItems = {
       icon: TicketCheck,
     },
     {
+      title: "Contribution History",
+      href: "/dashboard/admin/ContributionHistory",
+      icon: Clock,
+    },
+    {
       title: "Profile",
       href: "/dashboard/admin/profile",
       icon: User,
@@ -57,9 +62,9 @@ export const sidebarItems = {
       icon: ClipboardList,
     },
     {
-      title: "Property Reviews",
-      href: "/dashboard/donor/reviews",
-      icon: MdRateReview,
+      title: "Contribution History",
+      href: "/dashboard/donor/ContributionHistory",
+      icon: Clock,
     },
     {
       title: "Profile",
@@ -85,9 +90,9 @@ export const sidebarItems = {
       icon: ClipboardList,
     },
     {
-      title: "Payment History",
-      href: "/dashboard/patient/paymentHistory",
-      icon: MdPayment,
+      title: "Contribution History",
+      href: "/dashboard/patient/ContributionHistory",
+      icon: Clock,
     },
     {
       title: "Profile",
@@ -117,9 +122,9 @@ export const sidebarItems = {
       icon: List,
     },
     {
-      title: "Payment History",
-      href: "/dashboard/hospital/paymentHistory",
-      icon: MdPayment,
+      title: "Contribution History",
+      href: "/dashboard/hospital/ContributionHistory",
+      icon: Clock,
     },
     {
       title: "Profile",

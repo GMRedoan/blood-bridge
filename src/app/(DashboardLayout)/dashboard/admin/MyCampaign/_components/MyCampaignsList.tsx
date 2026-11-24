@@ -92,7 +92,7 @@ const MyCampaignsList = ({ campaigns }: MyCampaignsListProps) => {
         ) : (
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {paginatedCampaigns.map((campaign) => {
-               const style = statusStyles[campaign.status] 
+              const style = statusStyles[campaign.status] 
               const progress =
                 campaign.targetAmount > 0
                   ? Math.min(
