@@ -50,7 +50,7 @@ export function RegisterForm() {
       phone: "",
       city: "",
       password: "",
-      role: "PATIENT",
+      role: "DONOR",
     },
   });
 

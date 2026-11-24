@@ -2,7 +2,6 @@
 
 import { getUser } from "@/server/user/user.service";
 import { IGetUserProfile } from "@/types/user/user";
-// import { IUserProfile } from "@/types/auth/auth";
 import { createContext, useContext, useState } from "react";
 
 export type AuthStep =

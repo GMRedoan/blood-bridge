@@ -1,181 +1,133 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  ArrowRight,
+  BadgeCheck,
+  HeartHandshake,
+  Lock,
+  ScanSearch,
+  Sparkles,
+} from "lucide-react";
+import { BLOOD_GROUPS } from "@/app/(HomeLayout)/about/page";
+import { Button } from "../ui/button";
+import Animate from "../Reusable/Animate";
+import { useAuth } from "@/providers/AuthProvider";
 
-const GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
-const DISTRICTS = [
-  "Barishal",
-  "Bhola",
-  "Patuakhali",
-  "Dhaka",
-  "Chattogram",
-  "Khulna",
-  "Rajshahi",
-  "Sylhet",
-  "Rangpur",
-  "Mymensingh",
+const TRUST = [
+  { icon: BadgeCheck, text: "Admin-verified requests" },
+  { icon: Lock, text: "Secure Stripe payments" },
+  { icon: HeartHandshake, text: "Free to join" },
 ];
 
-const GRAIN =
-  "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.5'/></svg>\")";
-
 export function Banner() {
-  const router = useRouter();
-  const [group, setGroup] = useState<string>("O+");
-  const [district, setDistrict] = useState<string>("");
-
-  function search() {
-    const params = new URLSearchParams({ group });
-    if (district) params.set("district", district);
-    router.push(`/donors?${params.toString()}`);
-  }
+  const {openRegister} = useAuth();
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(
+      () => setIndex((i) => (i + 1) % BLOOD_GROUPS.length),
+      1800,
+    );
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <section className="relative isolate overflow-hidden bg-[#0c0709] text-[#f5ecea]">
-      {/* keyframes: one heartbeat line + slow breathing glow */}
-      <style>{`
-        @keyframes ecg { to { stroke-dashoffset: 0; } }
-        @keyframes breathe { 0%,100% { opacity:.55; transform:scale(1);} 50% { opacity:.9; transform:scale(1.06);} }
-        .ecg-line { stroke-dasharray: 700; stroke-dashoffset: 700; animation: ecg 2.6s cubic-bezier(.6,0,.2,1) .4s infinite; }
-        .drop-glow { animation: breathe 4.8s ease-in-out infinite; }
-        @media (prefers-reduced-motion: reduce) {
-          .ecg-line { animation: none; stroke-dashoffset: 0; }
-          .drop-glow { animation: none; }
-        }
-      `}</style>
-
-      {/* background layers */}
+    <section className="relative isolate overflow-hidden bg-linear-to-tr from-primary/5 via-background to-background mt-10">
+      {/* background */}
+      <div className="pointer-events-none absolute -right-24 -top-24 -z-10 h-80 w-80 rounded-full bg-primary/20 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-22 left-1/4 -z-10 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
       <div
         aria-hidden
-        className="absolute inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(60% 70% at 78% 45%, rgba(170,18,38,.38) 0%, rgba(80,8,20,.18) 45%, transparent 75%), radial-gradient(40% 50% at 8% 100%, rgba(120,12,30,.25), transparent 70%)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 opacity-[0.07] mix-blend-overlay"
-        style={{ backgroundImage: GRAIN }}
-      />
-      <div
-        aria-hidden
-        className="absolute inset-0 -z-10 opacity-[0.06] [mask-image:radial-gradient(70%_70%_at_75%_45%,black,transparent)]"
+        className="absolute inset-0 -z-10 opacity-[0.05] mask-[radial-gradient(70%_70%_at_75%_45%,black,transparent)]"
         style={{
           backgroundImage:
-            "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
+            "linear-gradient(currentColor 1px, transparent 1px), linear-gradient(90deg, currentColor 1px, transparent 1px)",
           backgroundSize: "56px 56px",
         }}
       />
 
-      <div className="mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 md:py-28 lg:grid-cols-[1.1fr_0.9fr] lg:py-32">
-        {/* left: message + search */}
-        <div>
-          <h1 className="font-[family-name:var(--font-display)] text-5xl leading-[1.02] tracking-tight sm:text-6xl lg:text-7xl">
-            Someone near you
-            <br />
-            needs your blood
-            <br />
-            group today.
+      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-[1.1fr_0.9fr] lg:py-28">
+        {/* Left */}
+        <Animate type="fadeLeft">
+          <span className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            <Sparkles className="h-3.5 w-3.5" />
+            Every donation counts
+          </span>
+
+          <h1 className="mt-5 text-4xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            Someone near you needs your{" "}
+            <span className="text-primary">blood group</span> today.
           </h1>
-          <p className="mt-6 max-w-md text-base leading-relaxed text-[#f5ecea]/60">
-            Search verified donors by blood group and district, or register to
-            be found when it matters.
+
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Connect with verified donors, post urgent blood requests, and
+            support fundraising campaigns for patients who cannot afford
+            treatment.
           </p>
 
-          {/* search panel */}
-          <div className="mt-10 rounded-2xl border border-white/10 bg-white/[0.04] p-4 shadow-[0_30px_80px_-30px_rgba(190,20,45,.55)] backdrop-blur-xl sm:p-5">
-            <div
-              role="radiogroup"
-              aria-label="Blood group"
-              className="grid grid-cols-4 gap-2 sm:grid-cols-8"
-            >
-              {GROUPS.map((g) => {
-                const active = g === group;
-                return (
-                  <button
-                    key={g}
-                    type="button"
-                    role="radio"
-                    aria-checked={active}
-                    onClick={() => setGroup(g)}
-                    className={[
-                      "h-11 rounded-xl border text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff5a6e]",
-                      active
-                        ? "border-transparent bg-[#d3162f] text-white shadow-[0_0_24px_-4px_rgba(230,30,60,.8)]"
-                        : "border-white/10 bg-white/[0.03] text-[#f5ecea]/75 hover:border-white/25 hover:bg-white/[0.07]",
-                    ].join(" ")}
-                  >
-                    {g}
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="mt-3 flex flex-col gap-3 sm:flex-row">
-              <Select value={district} onValueChange={setDistrict}>
-                <SelectTrigger
-                  aria-label="District"
-                  className="h-12 flex-1 rounded-xl border-white/10 bg-white/[0.03] px-4 text-[#f5ecea] data-[placeholder]:text-[#f5ecea]/50"
-                >
-                  <SelectValue placeholder="Any district" />
-                </SelectTrigger>
-                <SelectContent>
-                  {DISTRICTS.map((d) => (
-                    <SelectItem key={d} value={d}>
-                      {d}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button
-                onClick={search}
-                className="h-12 rounded-xl bg-[#d3162f] px-8 text-base text-white hover:bg-[#e01c37]"
-              >
-                Find {group} donors
-              </Button>
-            </div>
-          </div>
-
-          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
-            <Button
-              asChild
-              variant="outline"
-              className="h-11 rounded-xl border-white/20 bg-transparent px-6 text-[#f5ecea] hover:bg-white/10 hover:text-white"
-            >
-              <a href="/register">Register as a donor</a>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Button onClick={openRegister} size="lg">
+              Become a donor
+              <ArrowRight className="h-4 w-4" />
             </Button>
-            <span className="text-[#f5ecea]/50">
-              Free to search. No account needed.
-            </span>
-          </div>
-        </div>
 
-        {/* right: the drop */}
-        <div className="relative mx-auto aspect-[4/5] w-full max-w-[420px]">
+            <Button
+              className="flex items-center gap-2 px-4"
+              size="lg"
+              variant="outline"
+            >
+              <ScanSearch className="h-4 w-4" />
+              <Link href="/campaign">Explore campaigns</Link>
+            </Button>
+          </div>
+
+          {/* Blood group chips */}
+          <div className="mt-8 flex flex-wrap gap-2">
+            {BLOOD_GROUPS.map((group, i) => (
+              <span
+                key={group}
+                className={`inline-flex h-9 min-w-11 items-center justify-center rounded-full border px-3 text-sm font-bold transition-all ${
+                  i === index
+                    ? "border-transparent bg-primary text-primary-foreground shadow-md shadow-primary/30"
+                    : "border-primary/30 bg-card/70 text-primary"
+                }`}
+              >
+                {group}
+              </span>
+            ))}
+          </div>
+
+          {/* Trust */}
+          <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+            {TRUST.map(({ icon: Icon, text }) => (
+              <li key={text} className="flex items-center gap-2">
+                <Icon className="h-4 w-4 text-primary" />
+                {text}
+              </li>
+            ))}
+          </ul>
+        </Animate>
+
+        {/* Right: the drop */}
+        <Animate
+          type="fadeRight"
+          className="relative mx-auto aspect-4/5 w-full max-w-100"
+        >
           <div
             aria-hidden
-            className="drop-glow absolute inset-[-12%] rounded-full bg-[radial-gradient(circle,rgba(220,25,50,.5),transparent_65%)] blur-2xl"
+            className="drop-glow absolute inset-[-12%] rounded-full bg-[radial-gradient(circle,rgba(220,25,50,.45),transparent_65%)] blur-2xl"
           />
           <svg
             viewBox="0 0 400 500"
             role="img"
             aria-label="A blood drop with a heartbeat line"
-            className="relative h-full w-full"
+            className="relative h-full w-full drop-shadow-2xl"
           >
             <defs>
               <linearGradient id="dropFill" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0" stopColor="#ff4560" stopOpacity=".95" />
-                <stop offset=".55" stopColor="#9d0f27" stopOpacity=".92" />
+                <stop offset=".55" stopColor="#9d0f27" stopOpacity=".95" />
                 <stop offset="1" stopColor="#3a0612" stopOpacity=".98" />
               </linearGradient>
               <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
@@ -190,12 +142,11 @@ export function Banner() {
             <path
               d="M200 20C200 20 40 220 40 320c0 90 72 160 160 160s160-70 160-160C360 220 200 20 200 20Z"
               fill="url(#dropFill)"
-              stroke="rgba(255,255,255,.18)"
+              stroke="rgba(255,255,255,.2)"
               strokeWidth="1.5"
             />
 
             <g clipPath="url(#dropClip)">
-              {/* gloss */}
               <ellipse
                 cx="130"
                 cy="290"
@@ -205,30 +156,47 @@ export function Banner() {
                 fill="url(#gloss)"
                 opacity=".55"
               />
-              {/* heartbeat */}
               <polyline
-                className="ecg-line"
+                className="trace"
+                pathLength={1}
                 points="0,335 110,335 140,335 158,272 184,398 208,300 226,335 400,335"
                 fill="none"
                 stroke="#fff"
                 strokeWidth="3"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                style={{ filter: "drop-shadow(0 0 6px rgba(255,255,255,.8))" }}
+                style={{
+                  filter: "drop-shadow(0 0 6px rgba(255,255,255,.8))",
+                }}
               />
             </g>
           </svg>
 
-          {/* floating blood group tag */}
-          <div className="absolute -left-2 bottom-10 rounded-xl border border-white/10 bg-black/40 px-4 py-3 backdrop-blur-md sm:-left-8">
-            <p className="font-[family-name:var(--font-display)] text-3xl leading-none">
-              {group}
+          {/* Floating cards */}
+          <div className="animate-float absolute -left-2 bottom-12 rounded-xl border bg-card/80 px-4 py-3 shadow-lg backdrop-blur-md sm:-left-8">
+            <p className="text-3xl font-bold leading-none text-primary">
+              {BLOOD_GROUPS[index]}
             </p>
-            <p className="mt-1 text-xs text-[#f5ecea]/60">
-              {district || "Anywhere in Bangladesh"}
+            <p className="mt-1 text-xs text-muted-foreground">
+              Donors always needed
             </p>
           </div>
-        </div>
+
+          <div
+            className="animate-float absolute -right-2 top-16 flex items-center gap-2 rounded-xl border bg-card/80 px-3 py-2 shadow-lg backdrop-blur-md sm:-right-6"
+            style={{ animationDelay: "1.2s" }}
+          >
+            <BadgeCheck className="h-5 w-5 text-chart-2" />
+            <div>
+              <p className="text-xs font-semibold text-foreground">
+                Request verified
+              </p>
+              <p className="text-[10px] text-muted-foreground">
+                Reviewed by admin
+              </p>
+            </div>
+          </div>
+        </Animate>
       </div>
     </section>
   );

@@ -61,7 +61,7 @@
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.94 0.05 184.5);
+  --accent: oklch(0.6 0.118 184.704);
   --accent-foreground: oklch(0.25 0.06 184.5);
   --destructive: oklch(0.505 0.213 27.518);
   --border: oklch(0.922 0 0);
@@ -96,7 +96,7 @@
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.3 0.06 184.5);
+  --accent: oklch(0.6 0.118 184.704);
   --accent-foreground: oklch(0.93 0.04 184.5);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
@@ -132,7 +132,6 @@
 }
 
 /* Blood Bridge ECG Animation */
-
 @keyframes trace {
   0% {
     stroke-dashoffset: 1;
@@ -142,6 +141,12 @@
   100% {
     stroke-dashoffset: 0;
   }
+}
+
+.trace {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: trace 3.6s cubic-bezier(0.5, 0, 0.3, 1) infinite;
 }
 
 @keyframes blink {
@@ -154,12 +159,6 @@
   100% {
     opacity: 0;
   }
-}
-
-.trace {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: trace 3.6s cubic-bezier(0.5, 0, 0.3, 1) infinite;
 }
 
 .blip {
@@ -178,4 +177,19 @@
     animation: none;
     opacity: 1;
   }
+}
+
+/* floating animation */
+@keyframes floating {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-float {
+  animation: floating 3s ease-in-out infinite;
 }
