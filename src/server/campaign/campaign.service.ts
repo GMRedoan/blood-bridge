@@ -19,6 +19,19 @@ export const createCampaign = async (payload: ICreateCampaign) => {
     }
 }
 
+export const getAllCampaign = async () => {
+    try {
+        const res = await serverFetch.get<ICampaignResponse>("/campaign");
+        return {
+            success: true,
+            data: res.data,
+        }
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        throw error;
+    }
+}
+
 export const myCampaign = async () => {
     try {
         const res = await serverFetch.get<ICampaignResponse>("/campaign/myCampaign");

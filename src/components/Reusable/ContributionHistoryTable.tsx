@@ -17,13 +17,12 @@ import { usePagination } from "@/hooks/usePagination";
 import { IContribution } from "@/types/contribution/contribution";
 import { CalendarDays, HandCoins, HeartHandshake } from "lucide-react";
 import { statusStyles } from "@/lib/statusStyles";
+import { formatMoney } from "@/lib/formatMoney";
  
 interface ContributionHistoryTableProps {
   contributions: IContribution[];
   showContributor?: boolean;
 }
-
-const formatMoney = (amount: number) => `৳${amount.toLocaleString("en-BD")}`;
 
 const ContributionHistoryTable = ({
   contributions,

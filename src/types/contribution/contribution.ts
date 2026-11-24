@@ -20,6 +20,22 @@ export interface IContribution {
     contributor?: IContributor
 }
 
+export interface ICreateContribution {
+    campaignId: string
+    amount: number
+}
+
+export interface ICreateContributionResponse {
+    success: boolean
+    message: string
+    data: {
+        contribution: {
+            contributionId: string
+            checkoutUrl: string
+        }
+    }
+}
+
 export interface IContributionResponse {
     success: boolean
     message: string

@@ -69,7 +69,7 @@ interface NavbarProps {
 
 const defaultMenu: MenuItem[] = [
   { title: "Home", url: "/" },
-  { title: "Properties", url: "/properties" },
+  { title: "Campaign", url: "/campaign" },
   { title: "About", url: "/about" },
   { title: "Privacy", url: "/privacy-policy" },
 ];

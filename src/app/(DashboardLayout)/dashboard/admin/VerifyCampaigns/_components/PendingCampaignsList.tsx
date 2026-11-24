@@ -22,14 +22,13 @@ import { ICampaign } from "@/types/campaign/campaign";
 import { Toast } from "@/components/Reusable/Toast";
 import { Button } from "@/components/ui/button";
 import Swal from "sweetalert2";
+import { formatMoney } from "@/lib/formatMoney";
 
 interface PendingCampaignsListProps {
   campaigns: ICampaign[];
 }
 
 type CampaignAction = "ACTIVE" | "CANCELLED";
-
-const formatMoney = (amount: number) => `৳${amount.toLocaleString("en-BD")}`;
 
 const PendingCampaignsList = ({ campaigns }: PendingCampaignsListProps) => {
   const router = useRouter();

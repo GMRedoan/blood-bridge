@@ -11,12 +11,11 @@ import CreateCampaignDialog from "./CreateCampaignDialog";
 import { ICampaign } from "@/types/campaign/campaign";
 import { statusStyles } from "@/lib/statusStyles";
 import CampaignContributionsDialog from "./campaignContributionDialog";
+import { formatMoney } from "@/lib/formatMoney";
  
 interface MyCampaignsListProps {
   campaigns: ICampaign[];
 }
-
-const formatMoney = (amount: number) => `৳${amount.toLocaleString("en-BD")}`;
 
 const MyCampaignsList = ({ campaigns }: MyCampaignsListProps) => {
   const [search, setSearch] = useState("");

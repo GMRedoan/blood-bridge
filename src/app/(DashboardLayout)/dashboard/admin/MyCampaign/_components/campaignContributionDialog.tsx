@@ -25,13 +25,12 @@ import {
 import { CalendarDays } from "lucide-react";
 import Animate from "@/components/Reusable/Animate";
 import { statusStyles } from "@/lib/statusStyles";
+import { formatMoney } from "@/lib/formatMoney";
 
 interface CampaignContributionsDialogProps {
   campaignId: string;
   campaignTitle: string;
 }
-
-const formatMoney = (amount: number) => `৳${amount.toLocaleString("en-BD")}`;
 
 const CampaignContributionsDialog = ({
   campaignId,
