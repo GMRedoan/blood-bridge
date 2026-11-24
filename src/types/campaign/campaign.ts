@@ -26,5 +26,5 @@ export interface ICampaign {
 export interface ICampaignResponse {
     success: boolean
     message: string
-    data: ICampaign
+    data: ICampaign[]
 }

@@ -10,6 +10,7 @@ import { usePagination } from "@/hooks/usePagination";
 import CreateCampaignDialog from "./CreateCampaignDialog";
 import { ICampaign } from "@/types/campaign/campaign";
 import { statusStyles } from "@/lib/statusStyles";
+import CampaignContributionsDialog from "./campaignContributionDialog";
  
 interface MyCampaignsListProps {
   campaigns: ICampaign[];
@@ -34,7 +35,7 @@ const MyCampaignsList = ({ campaigns }: MyCampaignsListProps) => {
     resetKey: search,
   });
 
-  return (
+   return (
     <>
       <div className="space-y-6 p-6">
         {/* Header */}
@@ -121,7 +122,7 @@ const MyCampaignsList = ({ campaigns }: MyCampaignsListProps) => {
                     <span
                       className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${style}`}
                     >
-                      <span/>
+                      <span />
                       {campaign.status}
                     </span>
                   </div>
@@ -160,6 +161,10 @@ const MyCampaignsList = ({ campaigns }: MyCampaignsListProps) => {
                     <CalendarDays className="h-3.5 w-3.5 shrink-0" />
                     <span>Created {formatDate(campaign.createdAt)}</span>
                   </div>
+                  <CampaignContributionsDialog
+                    campaignId={campaign.id}
+                    campaignTitle={campaign.title}
+                  />
                 </Animate>
               );
             })}

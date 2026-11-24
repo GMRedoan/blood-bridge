@@ -32,3 +32,18 @@ export const getMyContributionHistory = async () => {
         throw error;
     }
 }
+
+export const getCampaignContributionHistory = async (id: string) => {
+    try {
+        const res = await serverFetch.get<IContributionResponse>(
+          `/campaign/contribution/history/${id}`,
+        );
+        return {
+            success: true,
+            data: res.data,
+        }
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        throw error;
+    }
+}
