@@ -7,6 +7,8 @@ import { AuthProvider } from "@/providers/AuthProvider";
 import { getUser } from "@/server/user/user.service";
 import AuthDialog from "@/components/Shared/auth/AuthDialog";
 import GoogleProvider from "@/providers/GoogleProvider";
+import { Suspense } from "react";
+import AuthDialogTrigger from "@/components/Reusable/AuthDialogTrigger";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -43,7 +45,10 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <GoogleProvider>
           <Provider>
             <AuthProvider initialUser={user?.success ? user.data : null}>
-              {children}
+              <Suspense fallback={null}>
+                <AuthDialogTrigger />
+                {children}
+              </Suspense>
               <AuthDialog />
             </AuthProvider>
           </Provider>

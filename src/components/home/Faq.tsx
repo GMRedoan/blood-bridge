@@ -31,7 +31,7 @@ const Faq = () => {
     category === "all" ? FAQS : FAQS.filter((f) => f.category === category);
 
   return (
-    <section className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
+    <section id="faq" className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
       <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
         {/* Left: intro + help card */}
         <div className="lg:sticky lg:top-28 lg:self-start">

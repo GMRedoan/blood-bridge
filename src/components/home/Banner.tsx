@@ -33,7 +33,7 @@ export function Banner() {
   }, []);
 
   return (
-    <section className="relative isolate overflow-hidden bg-linear-to-tr from-primary/5 via-background to-background mt-10">
+    <section id="home" className="relative isolate overflow-hidden bg-linear-to-tr from-primary/5 via-background to-background mt-10">
       {/* background */}
       <div className="pointer-events-none absolute -right-24 -top-24 -z-10 h-80 w-80 rounded-full bg-primary/20 blur-3xl" />
       <div className="pointer-events-none absolute bottom-22 left-1/4 -z-10 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />

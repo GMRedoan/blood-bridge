@@ -9,8 +9,8 @@ import Logo from "../Reusable/Logo";
 
 const exploreLinks = [
   {
-    label: "Browse Properties",
-    href: "/properties",
+    label: "Browse Campaigns",
+    href: "/campaign",
   },
   {
     label: "Dashboard",
@@ -21,8 +21,8 @@ const exploreLinks = [
     href: "/#home",
   },
   {
-    label: "Become a Landlord",
-    href: "/register",
+    label: "Manage profile",
+    href: "/dashboard",
   },
 ];
 
@@ -40,8 +40,8 @@ const companyLinks = [
     href: "/#faq",
   },
   {
-    label: "Services",
-    href: "#/services",
+    label: "Know your blood",
+    href: "/#blood",
   },
 ];
 

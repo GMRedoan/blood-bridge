@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { ArrowRight, Droplets, HeartHandshake, Info } from "lucide-react";
 import Animate from "@/components/Reusable/Animate";
 import { BLOOD_GROUPS } from "@/app/(HomeLayout)/about/page";
@@ -47,7 +46,7 @@ const BloodCompatibility = () => {
   );
 
   return (
-    <section className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
+    <section id="blood" className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:py-28">
       {/* Heading */}
       <Animate type="fadeUp" className="mx-auto max-w-2xl text-center">
         <span className="text-sm font-semibold uppercase tracking-wider text-primary">

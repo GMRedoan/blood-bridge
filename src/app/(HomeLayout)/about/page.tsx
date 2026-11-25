@@ -111,7 +111,7 @@ const ROLES = [
 
 const About = () => {
   return (
-    <div className="pb-20">
+    <div id="about" className="pb-20">
       {/* Hero */}
       <Animate className="relative isolate overflow-hidden   bg-linear-to-br from-primary/5 via-background to-background pt-10">
         <div className="pointer-events-none absolute -right-24 bottom-24 -z-10 h-80 w-80 rounded-full bg-primary/15 blur-3xl" />
