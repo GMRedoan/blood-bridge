@@ -32,8 +32,8 @@ const companyLinks = [
     href: "/#about",
   },
   {
-    label: "Contact",
-    href: "/#contact",
+    label: "Community",
+    href: "/#community",
   },
   {
     label: "FAQ",

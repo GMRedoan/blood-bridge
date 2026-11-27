@@ -4,7 +4,7 @@ export interface IContributor {
     name: string
     email: string
     phone: string
-}
+} 
 
 export interface IContribution {
     id: string

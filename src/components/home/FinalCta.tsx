@@ -36,7 +36,7 @@ const ACTIONS = [
 
 const FinalCta = () => {
   return (
-    <section className="py-10 pb-20">
+    <section id="community" className="py-10 pb-20">
       <Animate
         type="fadeUp"
         className="relative isolate overflow-hidden bg-background text-primary-foreground"
@@ -104,7 +104,10 @@ const FinalCta = () => {
         </div>
 
         {/* Action cards */}
-        <Animate type="zoom" className="grid gap-4 px-6 pb-8 pt-10 sm:px-22 md:grid-cols-3 lg:pb-12 lg:pt-12">
+        <Animate
+          type="zoom"
+          className="grid gap-4 px-6 pb-8 pt-10 sm:px-22 md:grid-cols-3 lg:pb-12 lg:pt-12"
+        >
           {ACTIONS.map(({ icon: Icon, title, text, href, cta }) => (
             <Link
               key={title}
